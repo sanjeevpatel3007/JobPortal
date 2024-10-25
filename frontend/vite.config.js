@@ -10,9 +10,9 @@ export default defineConfig({
     },
   },
   // this is only for responsive check
-  // server: {
-  //   host: '0.0.0.0', 
-  //   port: 5173,
-  // },
+  server: {
+    host: '0.0.0.0', 
+    port: 5173,
+  },
 
 })

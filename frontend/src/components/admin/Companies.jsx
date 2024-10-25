@@ -18,7 +18,7 @@ const Companies = () => {
         dispatch(setSearchCompanyByText(input));
     },[input]);
     return (
-        <div className='dark:bg-gray-900  bg-[#E1D7B7] min-h-screen '>
+        <div className='dark:bg-gray-900 pt-16 bg-[#E1D7B7] min-h-screen '>
             <Navbar />
             <div className='max-w-6xl mx-auto my-10'>
                 <div className='flex items-center justify-between my-5'>

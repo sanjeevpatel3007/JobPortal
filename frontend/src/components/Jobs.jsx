@@ -25,7 +25,7 @@ const Jobs = () => {
     }, [allJobs, searchedQuery]);
 
     return (
-<div className='bg-[#E1D7B7] text-[#1E2A5E] dark:bg-gray-900 dark:text-white min-h-screen'>
+<div className='bg-[#E1D7B7] text-[#1E2A5E] pt-20 dark:bg-gray-900 dark:text-white min-h-screen'>
     <Navbar />
     <div className='max-w-7xl mx-auto mt-5'>
         {/* Define the grid for desktop view */}

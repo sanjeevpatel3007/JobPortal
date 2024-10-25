@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../shared/Navbar'
 import { Button } from '../ui/button'
-import { ArrowLeft, Loader2 } from 'lucide-react'
+import { ArrowLeft, Loader2, Building2 } from 'lucide-react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import axios from 'axios'
@@ -10,6 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { useSelector } from 'react-redux'
 import useGetCompanyById from '@/hooks/useGetCompanyById'
+import { motion } from 'framer-motion'
 
 const CompanySetup = () => {
     const params = useParams();
@@ -41,7 +42,7 @@ const CompanySetup = () => {
         if (!input.description) errors.description = "Description is required";
         if (!input.website) errors.website = "Website is required";
         if (!input.location) errors.location = "Location is required";
-        if (!input.file) errors.file = "Logo is required";
+        if (!input.file && !singleCompany.logo) errors.file = "Logo is required";
 
         setErrors(errors);
         return Object.keys(errors).length === 0;
@@ -92,84 +93,118 @@ const CompanySetup = () => {
     },[singleCompany]);
 
     return (
-        <div className='dark:bg-gray-900  bg-[#E1D7B7] min-h-screen'>
+        <div className='bg-gradient-to-b from-[#E1D7B7] to-white dark:from-gray-900 dark:to-gray-800 min-h-screen pt-20'>
             <Navbar />
-            <div className='max-w-xl mx-auto my-10 border-2 p-6 '>
-                <form onSubmit={submitHandler} >
-                    <div className='flex items-center gap-5 p-8'>
-                        <Button onClick={() => navigate("/admin/companies")} variant="outline" className="flex items-center gap-2 text-gray-500  dark:bg-[#fff] font-semibold dark:hover:text-black">
-                            <ArrowLeft />
-                            <span>Back</span>
-                        </Button>
-                        <h1 className='font-bold text-xl'>Company Setup</h1>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className='max-w-2xl mx-auto px-4 py-8'
+            >
+                <div className='bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8'>
+                    <div className='flex items-center mb-6'>
+                        <Building2 className="w-10 h-10 text-blue-500 mr-4" />
+                        <div>
+                            <h1 className='font-bold text-3xl text-gray-800 dark:text-white'>Company Setup</h1>
+                            <p className='text-gray-500 dark:text-gray-400 mt-1'>Update your company information</p>
+                        </div>
                     </div>
-                    <div className='grid grid-cols-2 gap-4'>
-                        <div>
-                            <Label>Company Name</Label>
-                            <Input 
-                              className='dark:bg-transparent'
-                              type="text"
-                              name="name"
-                              value={input.name}
-                              onChange={changeEventHandler}
-                            />
-                            {errors.name && <span className="text-red-500">{errors.name}</span>}
+                    <form onSubmit={submitHandler} className='space-y-6'>
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                            <div>
+                                <Label htmlFor="name" className="text-sm font-medium text-gray-700 dark:text-gray-300">Company Name</Label>
+                                <Input 
+                                    id="name"
+                                    className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                    type="text"
+                                    name="name"
+                                    value={input.name}
+                                    onChange={changeEventHandler}
+                                />
+                                {errors.name && <span className="text-red-500 text-sm">{errors.name}</span>}
+                            </div>
+                            <div>
+                                <Label htmlFor="description" className="text-sm font-medium text-gray-700 dark:text-gray-300">Description</Label>
+                                <Input
+                                    id="description"
+                                    className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                    type="text"
+                                    name="description"
+                                    value={input.description}
+                                    onChange={changeEventHandler}
+                                />
+                                {errors.description && <span className="text-red-500 text-sm">{errors.description}</span>}
+                            </div>
+                            <div>
+                                <Label htmlFor="website" className="text-sm font-medium text-gray-700 dark:text-gray-300">Website</Label>
+                                <Input
+                                    id="website"
+                                    className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                    type="text"
+                                    name="website"
+                                    value={input.website}
+                                    onChange={changeEventHandler}
+                                />
+                                {errors.website && <span className="text-red-500 text-sm">{errors.website}</span>}
+                            </div>
+                            <div>
+                                <Label htmlFor="location" className="text-sm font-medium text-gray-700 dark:text-gray-300">Location</Label>
+                                <Input
+                                    id="location"
+                                    className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
+                                    type="text"
+                                    name="location"
+                                    value={input.location}
+                                    onChange={changeEventHandler}
+                                />
+                                {errors.location && <span className="text-red-500 text-sm">{errors.location}</span>}
+                            </div>
                         </div>
                         <div>
-                            <Label>Description</Label>
+                            <Label htmlFor="logo" className="text-sm font-medium text-gray-700 dark:text-gray-300">Logo</Label>
                             <Input
-                                className='dark:bg-transparent'
-                                type="text"
-                                name="description"
-                                value={input.description}
-                                onChange={changeEventHandler}
-                            />
-                            {errors.description && <span className="text-red-500">{errors.description}</span>}
-                        </div>
-                        <div>
-                            <Label>Website</Label>
-                            <Input
-                                className='dark:bg-transparent'
-                                type="text"
-                                name="website"
-                                value={input.website}
-                                onChange={changeEventHandler}
-                            />
-                            {errors.website && <span className="text-red-500">{errors.website}</span>}
-                        </div>
-                        <div>
-                            <Label>Location</Label>
-                            <Input
-                                className='dark:bg-transparent'
-                                type="text"
-                                name="location"
-                                value={input.location}
-                                onChange={changeEventHandler}
-                            />
-                            {errors.location && <span className="text-red-500">{errors.location}</span>}
-                        </div>
-                        <div>
-                            <Label>Logo</Label>
-                            <Input
-                                className='dark:bg-transparent'
+                                id="logo"
+                                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white'
                                 type="file"
                                 accept="image/*"
                                 onChange={changeFileHandler}
                             />
-                            {errors.file && <span className="text-red-500">{errors.file}</span>}
+                            {errors.file && <span className="text-red-500 text-sm">{errors.file}</span>}
                         </div>
-                    </div>
-                    {
-                        loading ? <Button className="w-full my-4"> <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait </Button> : <Button type="submit" className="w-full my-4">Update</Button>
-                    }
-                </form>
-            </div>
-
+                        <div className='flex items-center justify-between mt-8'>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => navigate("/admin/companies")}
+                                className="flex items-center text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white transition-colors duration-300"
+                            >
+                                <ArrowLeft className="w-4 h-4 mr-2" />
+                                Back to Companies
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300"
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <>
+                                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                                        Please wait
+                                    </>
+                                ) : (
+                                    'Update Company'
+                                )}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </motion.div>
         </div>
     )
 }
 
 export default CompanySetup;
+
 
 
 

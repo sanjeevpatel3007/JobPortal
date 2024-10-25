@@ -6,30 +6,30 @@ const LatestJobCards = ({job}) => {
     const navigate = useNavigate();
     return (
         <div 
-        onClick={() => navigate(`/description/${job._id}`)} 
-        className='p-5 rounded-md bg-white dark:bg-gray-800 dark:border-gray-900 border border-gray-100 cursor-pointer 
-        shadow-lg dark:shadow-md hover:shadow-2xl dark:hover:shadow-2xl transition-shadow'
- >
-        <div>
-            <h1 className='font-medium text-lg text-gray-900 dark:text-gray-100'>{job?.company?.name}</h1>
-            <p className='text-sm text-gray-500 dark:text-gray-400'>India</p>
+            onClick={() => navigate(`/description/${job._id}`)} 
+            className='p-6 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 cursor-pointer 
+                       shadow-md hover:shadow-xl dark:shadow-lg dark:hover:shadow-xl transition-all duration-300'
+        >
+            <div className="mb-4">
+                <h2 className='font-semibold text-xl text-gray-900 dark:text-gray-100'>{job?.company?.name}</h2>
+                <p className='text-sm text-gray-500 dark:text-gray-400'>India</p>
+            </div>
+            <div className="mb-4">
+                <h1 className='font-bold text-2xl mb-2 text-gray-900 dark:text-white'>{job?.title}</h1>
+                <p className='text-sm text-gray-600 dark:text-gray-300 line-clamp-2'>{job?.description}</p>
+            </div>
+            <div className='flex flex-wrap items-center gap-2'>
+                <Badge variant="secondary" className='text-blue-600 dark:text-blue-400'>
+                    {job?.position} Positions
+                </Badge>
+                <Badge variant="secondary" className='text-green-600 dark:text-green-400'>
+                    {job?.jobType}
+                </Badge>
+                <Badge variant="secondary" className='text-purple-600 dark:text-purple-400'>
+                    {job?.salary} LPA
+                </Badge>
+            </div>
         </div>
-        <div>
-            <h1 className='font-bold text-lg my-2 text-gray-900 dark:text-white'>{job?.title}</h1>
-            <p className='text-sm text-gray-600 dark:text-gray-300'>{job?.description}</p>
-        </div>
-        <div className='flex items-center gap-2 mt-4'>
-            <Badge className='text-[#7C93C3] dark:text-[#7c93c3] ' variant="ghost">
-                {job?.position} Positions
-            </Badge>
-            <Badge className='text-[#55679C] dark:text-[#55679c] font-bold' variant="ghost">
-                {job?.jobType}
-            </Badge>
-            <Badge className='text-[#1E2A5E] dark:text-[#9aa0bcbb] font-bold' variant="ghost">
-                {job?.salary} LPA
-            </Badge>
-        </div>
-    </div>
     )
 }
 

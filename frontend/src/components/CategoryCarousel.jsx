@@ -5,13 +5,13 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setSearchedQuery } from '@/redux/jobSlice';
 
-const category = [
+const categories = [
     "Frontend Developer",
     "Backend Developer",
     "Data Science",
     "Graphic Designer",
     "FullStack Developer"
-]
+];
 
 const CategoryCarousel = () => {
     const dispatch = useDispatch();
@@ -22,24 +22,29 @@ const CategoryCarousel = () => {
     }
 
     return (
-        <div>
-            <Carousel className="w-full max-w-xl mx-auto my-10  ">
-                <CarouselContent>
-                    {
-                        category.map((cat, index) => (
-                            <CarouselItem className=" basis-full md:basis-1/3  flex items-center justify-center md:w-full px-4 ">
-                                <Button onClick={()=>searchJobHandler(cat)} variant="outline" className="rounded-full bg-[#121e48] text-white">{cat}</Button>
+        <div className="py-8 px-4 md:px-8 lg:px-16">
+            <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">Popular Categories</h2>
+            <div className="relative">
+                <Carousel className="w-full max-w-5xl mx-auto">
+                    <CarouselContent>
+                        {categories.map((cat, index) => (
+                            <CarouselItem key={index} className="md:basis-1/3 lg:basis-1/4">
+                                <div className="p-1">
+                                    <Button 
+                                        onClick={() => searchJobHandler(cat)} 
+                                        variant="outline" 
+                                        className="w-full rounded-full bg-[#121e48] text-white hover:bg-[#1e3276] transition-colors duration-300"
+                                    >
+                                        {cat}
+                                    </Button>
+                                </div>
                             </CarouselItem>
-                        ))
-                    }
-                </CarouselContent>
-              
-                <CarouselPrevious className="absolute left-12 top-1/2 transform -translate-y-1/2 z-50 md:-left-16 lg:-left-10 text-black bg-white p-2 rounded-full shadow-lg" />
-                    <CarouselNext className="absolute right-12 top-1/2 transform -translate-y-1/2 z-50 md:-right-16 lg:-right-10 text-black bg-white p-2 rounded-full shadow-lg" />
-
-                {/* <CarouselPrevious  />
-                <CarouselNext /> */}
-            </Carousel>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="absolute -left-4 md:-left-12 top-1/2 transform -translate-y-1/2" />
+                    <CarouselNext className="absolute -right-4 md:-right-12 top-1/2 transform -translate-y-1/2" />
+                </Carousel>
+            </div>
         </div>
     )
 }

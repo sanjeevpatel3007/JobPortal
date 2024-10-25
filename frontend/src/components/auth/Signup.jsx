@@ -1,18 +1,15 @@
-
 import React, { useEffect, useState } from 'react';
 import Navbar from '../shared/Navbar';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
-import { RadioGroup } from '../ui/radio-group';
 import { Button } from '../ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { USER_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoading } from '@/redux/authSlice';
-import { Loader2 } from 'lucide-react';
-import { CheckCircle, XCircle } from 'lucide-react';
+import { setLoading, setUser } from '@/redux/authSlice';
+import { Loader2, CheckCircle, User, Mail, Phone, Lock, Upload } from 'lucide-react';
 
 const Signup = () => {
     const [input, setInput] = useState({
@@ -100,194 +97,160 @@ const Signup = () => {
     }, [user]);
 
     return (
-        <div className='dark:border-gray-700  bg-[#E1D7B7] text-[#1E2A5E]  dark:bg-gray-900 dark:text-white'>
+        <div className='bg-gradient-to-r pt-10 from-blue-100 to-purple-100 dark:from-gray-900 dark:to-gray-800 min-h-screen text-gray-800 dark:text-white'>
             <Navbar />
-            <div className='flex items-center justify-center max-w-7xl mx-auto '>
-                <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10 dark:border-gray-900 dark:bg-gray-900
-'>
-                    <h1 className='font-bold text-xl mb-5'>Sign Up</h1>
-
-                    <div className='my-2'>
-                        <Label>Full Name</Label>
-                        <div className="relative">
-                            <Input
-                            
-                                type="text"
-                                value={input.fullname}
-                                name="fullname"
-                                onChange={changeEventHandler}
-                                placeholder="Sanjeev Patel"
-                                className={validations.fullname.error ? "border-red-500" : "dark:border-gray-700 dark:bg-gray-800"}
-                            />
-                            {validations.fullname.error && <p className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500 text-sm">Full Name is required.</p>}
-                        </div>
+            <div className='flex items-center justify-center max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8'>
+                <div className='max-w-md w-full space-y-8'>
+                    <div>
+                        <h2 className='mt-6 text-center text-3xl font-extrabold'>
+                            Create your account
+                        </h2>
                     </div>
-
-                    <div className='my-2'>
-                        <Label>Email</Label>
-                        <div className="relative">
-                            <Input
-                                type="email"
-                                value={input.email}
-                                name="email"
-                                onChange={changeEventHandler}
-                                placeholder="Example@gmail.com"
-                                className={validations.email.error ? "border-red-500" : "dark:border-gray-700 dark:bg-gray-800"}
-                            />
-                            {validations.email.error && <p className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500 text-sm">Email is required.</p>}
+                    <form onSubmit={submitHandler} className='mt-8 space-y-6 bg-white dark:bg-gray-800 shadow-2xl rounded-lg p-8'>
+                        <div className='rounded-md shadow-sm -space-y-px'>
+                            <div className='mb-4'>
+                                <Label htmlFor='fullname' className='sr-only'>Full Name</Label>
+                                <div className='relative'>
+                                    <User className='absolute top-3 left-3 h-5 w-5 text-gray-400' />
+                                    <Input
+                                        id='fullname'
+                                        name='fullname'
+                                        type='text'
+                                        required
+                                        className='pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                                        placeholder='Full Name'
+                                        value={input.fullname}
+                                        onChange={changeEventHandler}
+                                    />
+                                </div>
+                            </div>
+                            <div className='mb-4'>
+                                <Label htmlFor='email' className='sr-only'>Email address</Label>
+                                <div className='relative'>
+                                    <Mail className='absolute top-3 left-3 h-5 w-5 text-gray-400' />
+                                    <Input
+                                        id='email'
+                                        name='email'
+                                        type='email'
+                                        autoComplete='email'
+                                        required
+                                        className='pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                                        placeholder='Email address'
+                                        value={input.email}
+                                        onChange={changeEventHandler}
+                                    />
+                                </div>
+                            </div>
+                            <div className='mb-4'>
+                                <Label htmlFor='phoneNumber' className='sr-only'>Phone Number</Label>
+                                <div className='relative'>
+                                    <Phone className='absolute top-3 left-3 h-5 w-5 text-gray-400' />
+                                    <Input
+                                        id='phoneNumber'
+                                        name='phoneNumber'
+                                        type='tel'
+                                        required
+                                        className='pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                                        placeholder='Phone Number'
+                                        value={input.phoneNumber}
+                                        onChange={changeEventHandler}
+                                    />
+                                </div>
+                            </div>
+                            <div className='mb-4'>
+                                <Label htmlFor='password' className='sr-only'>Password</Label>
+                                <div className='relative'>
+                                    <Lock className='absolute top-3 left-3 h-5 w-5 text-gray-400' />
+                                    <Input
+                                        id='password'
+                                        name='password'
+                                        type='password'
+                                        autoComplete='current-password'
+                                        required
+                                        className='pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                                        placeholder='Password'
+                                        value={input.password}
+                                        onChange={changeEventHandler}
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className='my-2'>
-                        <Label>Phone Number</Label>
-                        <div className="relative">
-                            <Input
-                                type="text"
-                                value={input.phoneNumber}
-                                name="phoneNumber"
-                                onChange={changeEventHandler}
-                                placeholder="8100000000"
-                                className={validations.phoneNumber.error ? "border-red-500" : "dark:border-gray-700 dark:bg-gray-800"}
-                            />
-                            {validations.phoneNumber.error && <p className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500 text-sm">Phone Number is required.</p>}
-                        </div>
-                    </div>
-
-                    <div className='my-2'>
-                        <Label>Password</Label>
-                        <div className="relative">
-                            <Input
-                                type="password"
-                                value={input.password}
-                                name="password"
-                                onChange={changeEventHandler}
-                                placeholder="********"
-                                className={validations.password.error ? "border-red-500" : "dark:border-gray-700 dark:bg-gray-800"}
-                            />
-                            {validations.password.error && <p className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-500 text-sm">Password is required.</p>}
-                        </div>
-                    </div>
-
-
-
-
-
-                    {/* <div className='flex items-center justify-between'>
-                        <RadioGroup className="flex items-center gap-4 my-5">
-                            <div className="flex items-center space-x-2">
+                        <div className='flex items-center justify-between space-x-4'>
+                            <div className='flex items-center'>
                                 <Input
-                                    type="radio"
-                                    name="role"
-                                    value="student"
+                                    id='role-student'
+                                    name='role'
+                                    type='radio'
+                                    value='student'
                                     checked={input.role === 'student'}
                                     onChange={changeEventHandler}
-                                    className="cursor-pointer"
+                                    className='h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300'
                                 />
-                                <Label htmlFor="r1">Student</Label>
+                                <Label htmlFor='role-student' className='ml-2 block text-sm text-gray-900 dark:text-gray-300'>
+                                    Student
+                                </Label>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className='flex items-center'>
                                 <Input
-                                    type="radio"
-                                    name="role"
-                                    value="recruiter"
+                                    id='role-recruiter'
+                                    name='role'
+                                    type='radio'
+                                    value='recruiter'
                                     checked={input.role === 'recruiter'}
                                     onChange={changeEventHandler}
-                                    className="cursor-pointer"
+                                    className='h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300'
                                 />
-                                <Label htmlFor="r2">Recruiter</Label>
+                                <Label htmlFor='role-recruiter' className='ml-2 block text-sm text-gray-900 dark:text-gray-300'>
+                                    Recruiter
+                                </Label>
                             </div>
-                        </RadioGroup>
-                        {validations.role.error && <p className="text-red-500 text-sm">Please select a role.</p>}
+                        </div>
 
-                    </div> */}
+                        <div>
+                            <Label htmlFor='file' className='block text-sm font-medium text-gray-700 dark:text-gray-300'>Profile Picture</Label>
+                            <div className='mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md'>
+                                <div className='space-y-1 text-center'>
+                                    <Upload className='mx-auto h-12 w-12 text-gray-400' />
+                                    <div className='flex text-sm text-gray-600'>
+                                        <label htmlFor='file' className='relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500'>
+                                            <span>Upload a file</span>
+                                            <Input id='file' name='file' type='file' className='sr-only' onChange={changeFileHandler} />
+                                        </label>
+                                        <p className='pl-1'>or drag and drop</p>
+                                    </div>
+                                    <p className='text-xs text-gray-500'>PNG, JPG, GIF up to 10MB</p>
+                                </div>
+                            </div>
+                        </div>
 
-
-<div className='flex items-center justify-between'>
-    <RadioGroup className="flex items-center gap-4 my-5">
-        {/* Student Option */}
-        <div className="flex items-center space-x-2">
-            <div 
-                className={`relative flex items-center justify-center w-8 h-8 border-2 rounded-md ${input.role === 'student' ? 'border-blue-500 bg-blue-500' : 'border-gray-400'}`}
-            >
-                <Input
-                    type="radio"
-                    name="role"
-                    value="student"
-                    checked={input.role === 'student'}
-                    onChange={changeEventHandler}
-                    className="opacity-0 cursor-pointer absolute inset-0 w-full h-full"
-                />
-                {input.role === 'student' && <CheckCircle className="text-white h-5 w-5" />}
-            </div>
-            <Label htmlFor="r1" className="cursor-pointer" onClick={() => setInput({ ...input, role: 'student' })}>
-                Student
-            </Label>
-        </div>
-
-        {/* Recruiter Option */}
-        <div className="flex items-center space-x-2">
-            <div 
-                className={`relative flex items-center justify-center w-8 h-8 border-2 rounded-md ${input.role === 'recruiter' ? 'border-blue-500 bg-blue-500' : 'border-gray-400'}`}
-            >
-                <Input
-                    type="radio"
-                    name="role"
-                    value="recruiter"
-                    checked={input.role === 'recruiter'}
-                    onChange={changeEventHandler}
-                    className="opacity-0 cursor-pointer absolute inset-0 w-full h-full"
-                />
-                {input.role === 'recruiter' && <CheckCircle className="text-white h-5 w-5" />}
-            </div>
-            <Label htmlFor="r2" className="cursor-pointer" onClick={() => setInput({ ...input, role: 'recruiter' })}>
-                Recruiter
-            </Label>
-        </div>
-    </RadioGroup>
-
-    {/* Validation Error Message */}
-    {validations.role.error && <p className="text-red-500 text-sm">Please select a role.</p>}
-</div>
-
-                   
-
-
-
-
-                    <div className='flex items-center justify-between gap-2'>
-                        <Label>Profile</Label>
-                        <Input
-                            accept="image/*"
-                            type="file"
-                            onChange={changeFileHandler}
-                            className="cursor-pointer w-100 dark:border-gray-700 dark:bg-gray-800"
-                          
-                        />
-                        {validations.file?.error && <p className="text-red-500 text-sm">Please upload an image.</p>}
-
-                    </div>
-
-                    
-
-
-
-                    {
-                        loading ? 
-                        <Button className="w-full my-4"> 
-                            <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait 
-                        </Button> 
-                        : 
-                        <Button type="submit" className="w-full my-4">Signup</Button>
-                    }
-                    <span className='text-sm'>Already have an account? <Link to="/login" className='text-blue-600'>Login</Link></span>
-                </form>
+                        <div>
+                            <Button
+                                type='submit'
+                                className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <>
+                                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                                        Please wait
+                                    </>
+                                ) : (
+                                    'Sign up'
+                                )}
+                            </Button>
+                        </div>
+                    </form>
+                    <p className='mt-2 text-center text-sm text-gray-600 dark:text-gray-400'>
+                        Already have an account?{' '}
+                        <Link to='/login' className='font-medium text-indigo-600 hover:text-indigo-500'>
+                            Log in
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     );
 };
 
 export default Signup;
-
-
-
-

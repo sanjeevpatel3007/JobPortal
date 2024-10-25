@@ -1,9 +1,7 @@
-
 import React, { useEffect, useState } from 'react';
 import Navbar from '../shared/Navbar';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
-import { RadioGroup } from '../ui/radio-group';
 import { Button } from '../ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -11,8 +9,7 @@ import { USER_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading, setUser } from '@/redux/authSlice';
-import { Loader2 } from 'lucide-react';
-import { CheckCircle, XCircle } from 'lucide-react'; // Importing icons for validation feedback
+import { Loader2, Mail, Lock } from 'lucide-react';
 
 const Login = () => {
     const [input, setInput] = useState({
@@ -59,7 +56,11 @@ const Login = () => {
             });
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
-                navigate("/");
+                if (res.data.user.role === 'recruiter') {
+                    navigate("/admin"); // Redirect recruiters to dashboard
+                } else {
+                    navigate("/"); // Redirect students to home
+                }
                 toast.success(res.data.message);
             }
         } catch (error) {
@@ -72,144 +73,120 @@ const Login = () => {
 
     useEffect(() => {
         if (user) {
-            navigate("/");
+            if (user.role === 'recruiter') {
+                navigate("/admin");
+            } else {
+                navigate("/");
+            }
         }
-    }, [user]);
+    }, [user, navigate]);
 
     return (
-        <div className='bg-[#E1D7B7] text-[#1E2A5E]  dark:bg-gray-900 dark:text-white min-h-screen'>
+        <div className='bg-gradient-to-r pt-20 from-blue-100 to-purple-100 dark:from-gray-900 dark:to-gray-800 min-h-screen text-gray-800 dark:text-white'>
             <Navbar />
-            <div className='flex items-center justify-center max-w-7xl mx-auto'>
-                <form onSubmit={submitHandler} className='w-1/2 border border-gray-200 rounded-md p-4 my-10'>
-                    <h1 className='font-bold text-xl mb-5'>Login</h1>
-                    <div className='my-2'>
-                        <Label>Email</Label>
-                        <div className="flex items-center">
-                            <Input
-                                type="email"
-                                value={input.email}
-                                name="email"
-                                onChange={changeEventHandler}
-                                placeholder="Example@gmail.com"
-                            />
-                            {validations.email.error && <XCircle className="text-red-500 ml-2 h-5 w-5" />}
-                            {validations.email.valid && <CheckCircle className="text-green-500 ml-2 h-5 w-5" />}
-                        </div>
-                        {validations.email.error && <p className="text-red-500 text-sm">Email is required.</p>}
+            <div className='flex items-center justify-center max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8'>
+                <div className='max-w-md w-full space-y-8'>
+                    <div>
+                        <h2 className='mt-6 text-center text-3xl font-extrabold'>
+                            Sign in to your account
+                        </h2>
                     </div>
-
-                    <div className='my-2'>
-                        <Label>Password</Label>
-                        <div className="flex items-center">
-                            <Input
-                                type="password"
-                                value={input.password}
-                                name="password"
-                                onChange={changeEventHandler}
-                                placeholder="*******"
-                            />
-                            {validations.password.error && <XCircle className="text-red-500 ml-2 h-5 w-5" />}
-                            {validations.password.valid && <CheckCircle className="text-green-500 ml-2 h-5 w-5" />}
+                    <form onSubmit={submitHandler} className='mt-8 space-y-6 bg-white dark:bg-gray-800 shadow-2xl rounded-lg p-8'>
+                        <div className='rounded-md shadow-sm -space-y-px'>
+                            <div className='mb-4'>
+                                <Label htmlFor='email' className='sr-only'>Email address</Label>
+                                <div className='relative'>
+                                    <Mail className='absolute top-3 left-3 h-5 w-5 text-gray-400' />
+                                    <Input
+                                        id='email'
+                                        name='email'
+                                        type='email'
+                                        autoComplete='email'
+                                        required
+                                        className='pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                                        placeholder='Email address'
+                                        value={input.email}
+                                        onChange={changeEventHandler}
+                                    />
+                                </div>
+                            </div>
+                            <div className='mb-4'>
+                                <Label htmlFor='password' className='sr-only'>Password</Label>
+                                <div className='relative'>
+                                    <Lock className='absolute top-3 left-3 h-5 w-5 text-gray-400' />
+                                    <Input
+                                        id='password'
+                                        name='password'
+                                        type='password'
+                                        autoComplete='current-password'
+                                        required
+                                        className='pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
+                                        placeholder='Password'
+                                        value={input.password}
+                                        onChange={changeEventHandler}
+                                    />
+                                </div>
+                            </div>
                         </div>
-                        {validations.password.error && <p className="text-red-500 text-sm">Password is required.</p>}
-                    </div>
 
-
-
-                    {/* <div className='flex items-center justify-between'>
-                        <RadioGroup className="flex items-center gap-4 my-5">
-                            <div className="flex items-center space-x-2">
+                        <div className='flex items-center justify-between space-x-4'>
+                            <div className='flex items-center'>
                                 <Input
-                                    type="radio"
-                                    name="role"
-                                    value="student"
+                                    id='role-student'
+                                    name='role'
+                                    type='radio'
+                                    value='student'
                                     checked={input.role === 'student'}
                                     onChange={changeEventHandler}
-                                    className="cursor-pointer"
+                                    className='h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300'
                                 />
-                                <Label htmlFor="r1">Student</Label>
+                                <Label htmlFor='role-student' className='ml-2 block text-sm text-gray-900 dark:text-gray-300'>
+                                    Student
+                                </Label>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className='flex items-center'>
                                 <Input
-                                    type="radio"
-                                    name="role"
-                                    value="recruiter"
+                                    id='role-recruiter'
+                                    name='role'
+                                    type='radio'
+                                    value='recruiter'
                                     checked={input.role === 'recruiter'}
                                     onChange={changeEventHandler}
-                                    className="cursor-pointer"
+                                    className='h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300'
                                 />
-                                <Label htmlFor="r2">Recruiter</Label>
+                                <Label htmlFor='role-recruiter' className='ml-2 block text-sm text-gray-900 dark:text-gray-300'>
+                                    Recruiter
+                                </Label>
                             </div>
-                        </RadioGroup>
-                        {validations.role.error && <XCircle className="text-red-500 ml-2 h-5 w-5" />}
-                        {validations.role.valid && <CheckCircle className="text-green-500 ml-2 h-5 w-5" />}
-                    </div> */}
+                        </div>
 
-<div className='flex items-center justify-between'>
-    <RadioGroup className="flex items-center gap-4 my-5">
-        <div className="flex items-center space-x-2">
-            <div 
-                className={`relative flex items-center justify-center w-8 h-8 border-2 rounded-md ${input.role === 'student' ? 'border-blue-500 bg-blue-500' : 'border-gray-400'}`}
-                onClick={() => setInput({ ...input, role: 'student' })}
-            >
-                {input.role === 'student' && <CheckCircle className="text-white h-5 w-5" />}
-            </div>
-            <Label htmlFor="r1" className="cursor-pointer" onClick={() => setInput({ ...input, role: 'student' })}>
-                Student
-            </Label>
-        </div>
-        <div className="flex items-center space-x-2">
-            <div 
-                className={`relative flex items-center justify-center w-8 h-8 border-2 rounded-md ${input.role === 'recruiter' ? 'border-blue-500 bg-blue-500' : 'border-gray-400'}`}
-                onClick={() => setInput({ ...input, role: 'recruiter' })}
-            >
-                {input.role === 'recruiter' && <CheckCircle className="text-white h-5 w-5" />}
-            </div>
-            <Label htmlFor="r2" className="cursor-pointer" onClick={() => setInput({ ...input, role: 'recruiter' })}>
-                Recruiter
-            </Label>
-        </div>
-    </RadioGroup>
-    {validations.role.error && <XCircle className="text-red-500 ml-2 h-5 w-5" />}
-    {validations.role.valid && <CheckCircle className="text-green-500 ml-2 h-5 w-5" />}
-</div>
-
-
-
-
-                    {/* {validations.role.error && <p className="text-red-500 text-sm">Please select a role.</p>} */}
-                    
-                    {
-                        loading ? 
-                        <Button className="w-full my-4"> 
-                            <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait 
-                        </Button> 
-                        : 
-                        <Button type="submit" className="w-full my-4">Login</Button>
-                    }
-                    <span className='text-sm'>Don't have an account? <Link to="/signup" className='text-blue-600'>Signup</Link></span>
-                </form>
+                        <div>
+                            <Button
+                                type='submit'
+                                className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                                disabled={loading}
+                            >
+                                {loading ? (
+                                    <>
+                                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                                        Please wait
+                                    </>
+                                ) : (
+                                    'Sign in'
+                                )}
+                            </Button>
+                        </div>
+                    </form>
+                    <p className='mt-2 text-center text-sm text-gray-600 dark:text-gray-400'>
+                        Don't have an account?{' '}
+                        <Link to='/signup' className='font-medium text-indigo-600 hover:text-indigo-500'>
+                            Sign up
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     )
 }
 
 export default Login;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

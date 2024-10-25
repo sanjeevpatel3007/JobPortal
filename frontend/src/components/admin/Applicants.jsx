@@ -1,35 +1,38 @@
 import React, { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import Navbar from '../shared/Navbar'
 import ApplicantsTable from './ApplicantsTable'
-import axios from 'axios';
-import { APPLICATION_API_END_POINT } from '@/utils/constant';
-import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { setAllApplicants } from '@/redux/applicationSlice';
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchApplicants } from '@/redux/applicationSlice'
+import { motion } from 'framer-motion'
 
 const Applicants = () => {
-    const params = useParams();
-    const dispatch = useDispatch();
-    const {applicants} = useSelector(store=>store.application);
+    const { id } = useParams()
+    const dispatch = useDispatch()
+    const { applicants } = useSelector(store => store.application)
 
     useEffect(() => {
-        const fetchAllApplicants = async () => {
-            try {
-                const res = await axios.get(`${APPLICATION_API_END_POINT}/${params.id}/applicants`, { withCredentials: true });
-                dispatch(setAllApplicants(res.data.job));
-            } catch (error) {
-                console.log(error);
-            }
+        if (id) {
+            dispatch(fetchApplicants(id))
+        } else {
+            dispatch(fetchApplicants())
         }
-        fetchAllApplicants();
-    }, []);
+    }, [dispatch, id])
+
     return (
-        <div className='dark:bg-gray-900  bg-[#E1D7B7] min-h-screen'>
+        <div className='dark:bg-gray-900 bg-[#E1D7B7] min-h-screen'>
             <Navbar />
-            <div className='max-w-7xl mx-auto dark:bg-gray-700 p-10 mt-10 bg-white rounded-lg'>
-                <h1 className='font-bold text-xl my-5'>Applicants {applicants?.applications?.length}</h1>
-                <ApplicantsTable />
-            </div>
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className='max-w-7xl mx-auto dark:bg-gray-800 bg-white rounded-lg shadow-lg p-8 mt-20'
+            >
+                <h1 className='font-bold text-2xl mb-6 text-gray-800 dark:text-white'>
+                    {id ? 'Job Applicants' : 'All Applicants'}
+                </h1>
+                <ApplicantsTable applicants={applicants} />
+            </motion.div>
         </div>
     )
 }

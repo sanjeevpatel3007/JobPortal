@@ -2,68 +2,106 @@ import React, { useEffect, useState } from 'react'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { Avatar, AvatarImage } from '../ui/avatar'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
-import { Edit2, Eye, MoreHorizontal } from 'lucide-react'
+import { Edit2, Eye, MoreHorizontal, Briefcase } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { Badge } from '../ui/badge'
 
-const AdminJobsTable = () => { 
+const AdminJobsTable = ({ onJobClick }) => { 
     const {allAdminJobs, searchJobByText} = useSelector(store=>store.job);
-
     const [filterJobs, setFilterJobs] = useState(allAdminJobs);
     const navigate = useNavigate();
 
     useEffect(()=>{ 
-        console.log('called');
         const filteredJobs = allAdminJobs.filter((job)=>{
             if(!searchJobByText){
                 return true;
             };
             return job?.title?.toLowerCase().includes(searchJobByText.toLowerCase()) || job?.company?.name.toLowerCase().includes(searchJobByText.toLowerCase());
-
         });
         setFilterJobs(filteredJobs);
     },[allAdminJobs,searchJobByText])
+
     return (
-        <div className='dark:bg-gray-900  bg-[#E1D7B7] rounded-lg border-2'>
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'
+        >
             <Table>
-                <TableCaption>A list of your recent  posted jobs</TableCaption>
+                <TableCaption>A list of your recently posted jobs</TableCaption>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Company Name</TableHead>
+                        <TableHead>Company</TableHead>
                         <TableHead>Role</TableHead>
-                        <TableHead>Date</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Salary</TableHead>
+                        <TableHead>Date Posted</TableHead>
+                        <TableHead>Status</TableHead>
                         <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {
-                        filterJobs?.map((job) => (
-                            <tr>
-                                <TableCell>{job?.company?.name}</TableCell>
-                                <TableCell>{job?.title}</TableCell>
-                                <TableCell>{job?.createdAt.split("T")[0]}</TableCell>
-                                <TableCell className="text-right cursor-pointer">
-                                    <Popover>
-                                        <PopoverTrigger><MoreHorizontal /></PopoverTrigger>
-                                        <PopoverContent className="w-32">
-                                            <div onClick={()=> navigate(`/admin/companies/${job._id}`)} className='flex items-center gap-2 w-fit cursor-pointer'>
-                                                <Edit2 className='w-4' />
-                                                <span>Edit</span>
-                                            </div>
-                                            <div onClick={()=> navigate(`/admin/jobs/${job._id}/applicants`)} className='flex items-center w-fit gap-2 cursor-pointer mt-2'>
-                                                <Eye className='w-4'/>
-                                                <span>Applicants</span>
-                                            </div>
-                                        </PopoverContent>
-                                    </Popover>
-                                </TableCell>
-                            </tr>
-
-                        ))
-                    }
+                    {filterJobs?.map((job, index) => (
+                        <motion.tr
+                            key={job._id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            onClick={() => onJobClick(job._id)}
+                            className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                            <TableCell>
+                                <div className="flex items-center space-x-3">
+                                    <Avatar>
+                                        <AvatarImage src={job?.company?.logo} alt={job?.company?.name} />
+                                    </Avatar>
+                                    <span>{job?.company?.name}</span>
+                                </div>
+                            </TableCell>
+                            <TableCell>{job?.title}</TableCell>
+                            <TableCell>{job?.location}</TableCell>
+                            <TableCell>{job?.salary}</TableCell>
+                            <TableCell>{new Date(job?.createdAt).toLocaleDateString()}</TableCell>
+                            <TableCell>
+                                <Badge variant={job?.isActive ? "success" : "secondary"}>
+                                    {job?.isActive ? "Active" : "Inactive"}
+                                </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                                <Popover>
+                                    <PopoverTrigger>
+                                        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                                            <MoreHorizontal className="cursor-pointer" />
+                                        </motion.div>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-40">
+                                        <motion.div 
+                                            whileHover={{ backgroundColor: "#f3f4f6" }}
+                                            onClick={() => navigate(`/admin/jobs/${job._id}`)} 
+                                            className='flex items-center gap-2 w-full cursor-pointer p-2 rounded'
+                                        >
+                                            <Edit2 className='w-4' />
+                                            <span>Edit Job</span>
+                                        </motion.div>
+                                        <motion.div 
+                                            whileHover={{ backgroundColor: "#f3f4f6" }}
+                                            onClick={() => navigate(`/admin/jobs/${job._id}/applicants`)} 
+                                            className='flex items-center w-full gap-2 cursor-pointer mt-2 p-2 rounded'
+                                        >
+                                            <Eye className='w-4'/>
+                                            <span>View Applicants</span>
+                                        </motion.div>
+                                    </PopoverContent>
+                                </Popover>
+                            </TableCell>
+                        </motion.tr>
+                    ))}
                 </TableBody>
             </Table>
-        </div>
+        </motion.div>
     )
 }
 

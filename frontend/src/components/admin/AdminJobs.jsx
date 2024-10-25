@@ -7,6 +7,8 @@ import { useDispatch } from 'react-redux'
 import AdminJobsTable from './AdminJobsTable'
 import useGetAllAdminJobs from '@/hooks/useGetAllAdminJobs'
 import { setSearchJobByText } from '@/redux/jobSlice'
+import { motion } from 'framer-motion'
+import { Plus, Search } from 'lucide-react'
 
 const AdminJobs = () => {
   useGetAllAdminJobs();
@@ -17,21 +19,52 @@ const AdminJobs = () => {
   useEffect(() => {
     dispatch(setSearchJobByText(input));
   }, [input]);
+
   return (
-    <div className='dark:bg-gray-900  bg-[#E1D7B7] min-h-screen  border-2 '>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className='dark:bg-gray-900 bg-[#E1D7B7] min-h-screen'
+    >
       <Navbar />
-      <div className='max-w-6xl mx-auto my-10'>
-        <div className='flex items-center justify-between my-5'>
-          <Input
-            className="w-fit"
-            placeholder="Filter by name, role"
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <Button onClick={() => navigate("/admin/jobs/create")}>New Jobs</Button>
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className='max-w-6xl mx-auto my-10 px-4'
+      >
+        <div className='flex pt-16 flex-col sm:flex-row items-center justify-between my-5 space-y-4 sm:space-y-0'>
+          <div className='relative w-full sm:w-64'>
+            <Input
+              className="pl-10 pr-4 py-2 w-full"
+              placeholder="Filter by name, role"
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          </div>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button 
+              onClick={() => navigate("/admin/jobs/create")}
+              className="w-full sm:w-auto flex items-center justify-center"
+            >
+              <Plus size={18} className="mr-2" />
+              New Job
+            </Button>
+          </motion.div>
         </div>
-        <AdminJobsTable />
-      </div>
-    </div>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
+          <AdminJobsTable onJobClick={(jobId) => navigate(`/admin/jobs/${jobId}`)} />
+        </motion.div>
+      </motion.div>
+    </motion.div>
   )
 }
 
