@@ -23,6 +23,7 @@ import CreateResume from './components/resume/CreateResume'
 import AtsHome from './components/atsscore/AtsHome'
 import SavedJobs from './components/SavedJobs'
 import ViewResumeTemplate from './components/atsscore/components/ViewResumeTemplate'
+import NotFound from './components/NotFound'
 
 const appRouter = createBrowserRouter([
   {
@@ -34,6 +35,14 @@ const appRouter = createBrowserRouter([
   {
     path: '/login',
     element:  <Layout>  <Login /></Layout> 
+  },
+  { path: '/*',
+    element: <Layout>
+     
+      
+      <NotFound/>
+    </Layout>
+
   },
   {
     path: '/signup',
