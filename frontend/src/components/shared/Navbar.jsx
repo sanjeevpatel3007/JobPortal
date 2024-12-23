@@ -81,7 +81,8 @@ const Navbar = () => {
           {/* Desktop menu */}
           <div className='hidden md:flex items-center space-x-6'>
             <NavLinks />
-            <ThemeToggle />
+            {/* // dark light light mode button */}
+            {/* <ThemeToggle /> */}
             {!user ? (
               <div className='flex items-center space-x-3'>
                 <Link to="/login">

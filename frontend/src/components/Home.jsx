@@ -82,18 +82,19 @@ const Home = () => {
 
       <motion.div 
         variants={sectionVariants}
-        className="relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg py-16"
+        className="relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg "
       >
         <HowItWorks />
       </motion.div>
 
-      <motion.div variants={sectionVariants}>
+      <motion.div variants={sectionVariants}
+       className="relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg ">
         <CategoryCarousel />
       </motion.div>
 
       <motion.div 
         variants={sectionVariants}
-        className="relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg py-16"
+        className="relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg "
       >
         <LatestJobs />
       </motion.div>

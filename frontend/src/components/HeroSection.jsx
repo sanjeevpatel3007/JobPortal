@@ -50,7 +50,7 @@ const HeroSection = () => {
               Featured Companies
             </h3>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-2">
             {companies.map((company, index) => (
               <motion.div
@@ -101,8 +101,8 @@ const HeroSection = () => {
   return (
     <div className="relative px-4 pt-20 pb-16 sm:px-6 lg:px-8 lg:pt-24">
       {/* Floating SVG Illustrations */}
-      <FloatingIllustration 
-        delay={0} 
+      <FloatingIllustration
+        delay={0}
         className="absolute top-20 left-10 w-24 h-24 hidden lg:block"
       >
         <svg viewBox="0 0 200 200" className="w-full h-full text-indigo-500/20">
@@ -114,8 +114,8 @@ const HeroSection = () => {
         </svg>
       </FloatingIllustration>
 
-      <FloatingIllustration 
-        delay={1} 
+      <FloatingIllustration
+        delay={1}
         duration={7}
         className="absolute top-40 right-20 w-32 h-32 hidden lg:block"
       >
@@ -128,7 +128,7 @@ const HeroSection = () => {
         </svg>
       </FloatingIllustration>
 
-      <FloatingIllustration 
+      <FloatingIllustration
         delay={2}
         duration={8}
         className="absolute bottom-20 left-1/4 w-28 h-28 hidden lg:block"
@@ -169,22 +169,29 @@ const HeroSection = () => {
             Connect with top employers and opportunities that match your skills
           </p>
 
+
           {/* Search Bar with enhanced styling */}
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className="mt-8 max-w-2xl mx-auto"
           >
-            <div className="relative flex items-center group">
+            <div className="relative flex items-center w-full group">
+              {/* Search Icon */}
               <Search className="absolute left-4 text-gray-400 group-hover:text-indigo-500 transition-colors" />
+
+              {/* Input Field */}
               <input
                 type="text"
                 placeholder="Search jobs, companies, or keywords..."
-                className="w-full pl-12 pr-4 py-3 rounded-l-lg border-2 border-r-0 border-gray-200 dark:border-gray-700 focus:outline-none focus:border-indigo-500 dark:bg-gray-800 dark:text-white transition-all group-hover:border-indigo-300"
+                className="w-full pl-12 pr-4 py-3 rounded-l-lg border-r-transparent  border-2 border-r-0 border-gray-200 dark:border-gray-700 focus:outline-none focus:border-indigo-500 dark:bg-gray-800 dark:text-white transition-all group-hover:border-indigo-300"
               />
-              <Button 
-                className="px-6 py-3 rounded-r-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all"
+
+              {/* Search Button */}
+              <Button
+                className="px-6 py-6 rounded-r-lg border-l-0 rounded-l-none  bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all"
               >
                 <motion.div
                   className="flex items-center gap-2"
@@ -196,6 +203,9 @@ const HeroSection = () => {
               </Button>
             </div>
           </motion.div>
+
+
+
 
           {/* Stats with enhanced animations */}
           <motion.div
@@ -213,7 +223,7 @@ const HeroSection = () => {
               >
                 <div className="flex-shrink-0">
                   <motion.div
-                    animate={{ 
+                    animate={{
                       scale: [1, 1.2, 1],
                       rotate: [0, 10, 0]
                     }}

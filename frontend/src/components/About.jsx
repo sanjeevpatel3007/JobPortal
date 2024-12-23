@@ -1,7 +1,7 @@
 import React from 'react';
 import { Users, Briefcase, Award, TrendingUp, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-
+import { Link } from 'react-router-dom';
 const About = () => {
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -66,9 +66,12 @@ const About = () => {
           >
             <h2 className="text-4xl font-bold mb-6">Ready to Start Your Journey?</h2>
             <p className="text-xl mb-8">Join JobLynk today and take the first step towards your dream career.</p>
+          <Link to="/signup">
+         
             <button className="bg-white text-blue-600 font-semibold py-3 px-8 rounded-full hover:bg-blue-100 transition duration-300 text-lg shadow-md hover:shadow-lg transform hover:-translate-y-1">
               Sign Up Now
             </button>
+            </Link>
           </motion.div>
 
           <motion.div 

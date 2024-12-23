@@ -11,53 +11,54 @@ import {
 const testimonials = [
   {
     id: 1,
-    name: "Sarah Johnson",
-    role: "Software Engineer",
-    company: "TechCorp",
-    image: "https://randomuser.me/api/portraits/women/1.jpg",
-    quote: "JobLynk helped me land my dream job! The platform's user-friendly interface and powerful job matching algorithm made my job search incredibly efficient."
+    name: "Amit Sharma",
+    role: "Software Developer",
+    company: "Tech Solutions Pvt Ltd",
+    image: "https://randomuser.me/api/portraits/men/1.jpg",
+    quote: "JobLynk made my job search journey smooth and effortless. The intuitive interface and excellent job matching algorithms made all the difference."
   },
   {
     id: 2,
-    name: "Michael Chen",
-    role: "Marketing Manager",
-    company: "BrandBoost",
-    image: "https://randomuser.me/api/portraits/men/2.jpg",
-    quote: "As an employer, JobLynk has been invaluable in finding top talent. The quality of candidates we've hired through the platform has been exceptional."
+    name: "Priya Patel",
+    role: "Product Manager",
+    company: "InnovateTech",
+    image: "https://randomuser.me/api/portraits/women/2.jpg",
+    quote: "As a hiring manager, JobLynk has helped us find the best talent. It's an invaluable tool for discovering high-quality candidates in the tech industry."
   },
   {
     id: 3,
-    name: "Emily Rodriguez",
-    role: "UX Designer",
-    company: "DesignHub",
-    image: "https://randomuser.me/api/portraits/women/3.jpg",
-    quote: "The career resources and networking features on JobLynk gave me the edge I needed in a competitive job market. I'm grateful for the opportunities it opened up for me."
+    name: "Rajesh Kumar",
+    role: "UX/UI Designer",
+    company: "DesignCo",
+    image: "https://randomuser.me/api/portraits/men/3.jpg",
+    quote: "JobLynk gave me the opportunity to connect with amazing companies and find a job that perfectly fits my skills and aspirations."
   },
   {
     id: 4,
-    name: "Sarah Johnson",
-    role: "Software Engineer",
-    company: "TechCorp",
-    image: "https://randomuser.me/api/portraits/women/1.jpg",
-    quote: "JobLynk helped me land my dream job! The platform's user-friendly interface and powerful job matching algorithm made my job search incredibly efficient."
+    name: "Ananya Rao",
+    role: "Data Analyst",
+    company: "DataX Technologies",
+    image: "https://randomuser.me/api/portraits/women/4.jpg",
+    quote: "The resources and support offered by JobLynk helped me secure a job in a competitive field. I'm so grateful for the opportunities this platform has given me."
   },
   {
     id: 5,
-    name: "Michael Chen",
-    role: "Marketing Manager",
-    company: "BrandBoost",
-    image: "https://randomuser.me/api/portraits/men/2.jpg",
-    quote: "As an employer, JobLynk has been invaluable in finding top talent. The quality of candidates we've hired through the platform has been exceptional."
+    name: "Vikram Singh",
+    role: "Marketing Head",
+    company: "Global Ventures",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    quote: "JobLynk is a game-changer. It's an efficient platform that allows us to easily find and hire top talent, and the process is always smooth and reliable."
   },
   {
     id: 6,
-    name: "Emily Rodriguez",
-    role: "UX Designer",
-    company: "DesignHub",
-    image: "https://randomuser.me/api/portraits/women/3.jpg",
-    quote: "The career resources and networking features on JobLynk gave me the edge I needed in a competitive job market. I'm grateful for the opportunities it opened up for me."
+    name: "Sanya Gupta",
+    role: "Full Stack Developer",
+    company: "CodeCrafters",
+    image: "https://randomuser.me/api/portraits/women/5.jpg",
+    quote: "JobLynk provided me with a great platform to enhance my career. I received excellent job recommendations and found my current role quickly."
   }
 ];
+
 
 const TestimonialCard = ({ testimonial }) => (
   <Card className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden h-full">
