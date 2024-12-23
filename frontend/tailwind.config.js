@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+import tailwindcssAnimate from "tailwindcss-animate";
+
+export default {
   darkMode: ["class"],
   content: [
     './pages/**/*.{js,jsx}',
@@ -18,12 +20,12 @@ module.exports = {
     },
     extend: {
       colors: {
-        customLightBg: '#E1D7B7',  // Your light background
-        customDarkBg: '#1E2A5E',   // Your dark background
-        customTextLight: '#1E2A5E', // Your dark text for light mode
-        customTextDark: '#E1D7B7',  // Your light text for dark mode
-        customBox: '#55679C',       // Box color for both
-        customHighlight: '#7C93C3', // Highlight color
+        customLightBg: '#E1D7B7',
+        customDarkBg: '#1E2A5E',
+        customTextLight: '#1E2A5E',
+        customTextDark: '#E1D7B7',
+        customBox: '#55679C',
+        customHighlight: '#7C93C3',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -79,5 +81,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
-}
+  plugins: [tailwindcssAnimate],
+};
