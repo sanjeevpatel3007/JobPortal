@@ -25,8 +25,8 @@ const Jobs = () => {
     }, [allJobs, searchedQuery]);
 
     return (
-<div className='bg-[#E1D7B7] text-[#1E2A5E] pt-20 dark:bg-gray-900 dark:text-white min-h-screen'>
-    <Navbar />
+<div className=' text-[#1E2A5E] pt-20 dark:bg-gray-900 dark:text-white min-h-screen'>
+   
     <div className='max-w-7xl mx-auto mt-5'>
         {/* Define the grid for desktop view */}
         <div className='grid grid-cols-1 md:grid-cols-[300px_1fr] gap-5'> {/* 300px for FilterCard, 1fr for the rest */}

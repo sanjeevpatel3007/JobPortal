@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Navbar from '../shared/Navbar';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
@@ -8,37 +7,52 @@ import axios from 'axios';
 import { USER_API_END_POINT } from '@/utils/constant';
 import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
-import { setLoading, setUser } from '@/redux/authSlice';
-import { Loader2, Mail, Lock } from 'lucide-react';
+import { setUser } from '@/redux/authSlice';
+import { Loader2, Mail, Lock, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import AuthCTA from './AuthCTA';
+import {InterviewCTA } from "./InterviewCTA";
+
 
 const Login = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [input, setInput] = useState({
         email: "",
         password: "",
-        role: "",
     });
-    const [validations, setValidations] = useState({
-        email: { valid: false, error: false },
-        password: { valid: false, error: false },
-        role: { valid: false, error: false },
-    });
-    const { loading, user } = useSelector(store => store.auth);
+    const [errors, setErrors] = useState({});
+    
+    const { user } = useSelector(store => store.auth);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const changeEventHandler = (e) => {
-        setInput({ ...input, [e.target.name]: e.target.value });
-    }
+    const validateField = (name, value) => {
+        switch (name) {
+            case 'email':
+                return !value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/) ? 'Invalid email address' : '';
+            case 'password':
+                return value.length < 6 ? 'Password must be at least 6 characters' : '';
+            default:
+                return '';
+        }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setInput(prev => ({ ...prev, [name]: value }));
+        setErrors(prev => ({ ...prev, [name]: validateField(name, value) }));
+    };
 
     const validateForm = () => {
-        const newValidations = {
-            email: { valid: input.email.trim() !== '', error: input.email.trim() === '' },
-            password: { valid: input.password.trim() !== '', error: input.password.trim() === '' },
-            role: { valid: input.role !== '', error: input.role === '' },
-        };
-        setValidations(newValidations);
-        return Object.values(newValidations).every(field => field.valid);
-    }
+        const newErrors = {};
+        Object.keys(input).forEach(key => {
+            const error = validateField(key, input[key]);
+            if (error) newErrors[key] = error;
+        });
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -47,7 +61,7 @@ const Login = () => {
             return;
         }
         try {
-            dispatch(setLoading(true));
+            setIsLoading(true);
             const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
                 headers: {
                     "Content-Type": "application/json"
@@ -57,19 +71,19 @@ const Login = () => {
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
                 if (res.data.user.role === 'recruiter') {
-                    navigate("/admin"); // Redirect recruiters to dashboard
+                    navigate("/admin");
                 } else {
-                    navigate("/"); // Redirect students to home
+                    navigate("/");
                 }
                 toast.success(res.data.message);
             }
         } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message);
+            console.error(error);
+            toast.error(error.response?.data?.message || 'Login failed');
         } finally {
-            dispatch(setLoading(false));
+            setIsLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
         if (user) {
@@ -82,111 +96,180 @@ const Login = () => {
     }, [user, navigate]);
 
     return (
-        <div className='bg-gradient-to-r pt-20 from-blue-100 to-purple-100 dark:from-gray-900 dark:to-gray-800 min-h-screen text-gray-800 dark:text-white'>
-            <Navbar />
-            <div className='flex items-center justify-center max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8'>
-                <div className='max-w-md w-full space-y-8'>
-                    <div>
-                        <h2 className='mt-6 text-center text-3xl font-extrabold'>
-                            Sign in to your account
-                        </h2>
-                    </div>
-                    <form onSubmit={submitHandler} className='mt-8 space-y-6 bg-white dark:bg-gray-800 shadow-2xl rounded-lg p-8'>
-                        <div className='rounded-md shadow-sm -space-y-px'>
-                            <div className='mb-4'>
-                                <Label htmlFor='email' className='sr-only'>Email address</Label>
-                                <div className='relative'>
-                                    <Mail className='absolute top-3 left-3 h-5 w-5 text-gray-400' />
-                                    <Input
-                                        id='email'
-                                        name='email'
-                                        type='email'
-                                        autoComplete='email'
-                                        required
-                                        className='pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
-                                        placeholder='Email address'
-                                        value={input.email}
-                                        onChange={changeEventHandler}
-                                    />
-                                </div>
-                            </div>
-                            <div className='mb-4'>
-                                <Label htmlFor='password' className='sr-only'>Password</Label>
-                                <div className='relative'>
-                                    <Lock className='absolute top-3 left-3 h-5 w-5 text-gray-400' />
-                                    <Input
-                                        id='password'
-                                        name='password'
-                                        type='password'
-                                        autoComplete='current-password'
-                                        required
-                                        className='pl-10 focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md'
-                                        placeholder='Password'
-                                        value={input.password}
-                                        onChange={changeEventHandler}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+        <div className='min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8'>
+            <div className='max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start'>
+                <motion.div 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <div className='bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8'>
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className='text-center mb-8'
+                        >
+                            <h2 className='text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>
+                                Welcome back
+                            </h2>
+                            <p className='mt-2 text-gray-600 dark:text-gray-400'>
+                                Sign in to continue your journey
+                            </p>
+                        </motion.div>
 
-                        <div className='flex items-center justify-between space-x-4'>
-                            <div className='flex items-center'>
-                                <Input
-                                    id='role-student'
-                                    name='role'
-                                    type='radio'
-                                    value='student'
-                                    checked={input.role === 'student'}
-                                    onChange={changeEventHandler}
-                                    className='h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300'
-                                />
-                                <Label htmlFor='role-student' className='ml-2 block text-sm text-gray-900 dark:text-gray-300'>
-                                    Student
-                                </Label>
-                            </div>
-                            <div className='flex items-center'>
-                                <Input
-                                    id='role-recruiter'
-                                    name='role'
-                                    type='radio'
-                                    value='recruiter'
-                                    checked={input.role === 'recruiter'}
-                                    onChange={changeEventHandler}
-                                    className='h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300'
-                                />
-                                <Label htmlFor='role-recruiter' className='ml-2 block text-sm text-gray-900 dark:text-gray-300'>
-                                    Recruiter
-                                </Label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <Button
-                                type='submit'
-                                className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-                                disabled={loading}
+                        <form onSubmit={submitHandler} className='space-y-6'>
+                            <motion.div 
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.3 }}
+                                className='space-y-4'
                             >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                                        Please wait
-                                    </>
-                                ) : (
-                                    'Sign in'
-                                )}
-                            </Button>
-                        </div>
-                    </form>
-                    <p className='mt-2 text-center text-sm text-gray-600 dark:text-gray-400'>
-                        Don't have an account?{' '}
-                        <Link to='/signup' className='font-medium text-indigo-600 hover:text-indigo-500'>
-                            Sign up
-                        </Link>
-                    </p>
-                </div>
+                                {/* Email */}
+                                <div>
+                                    <Label htmlFor='email' className='text-gray-700 dark:text-gray-300'>Email Address</Label>
+                                    <div className='relative mt-1 group'>
+                                        <Mail className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-indigo-500 transition-colors' size={18} />
+                                        <Input
+                                            id='email'
+                                            name='email'
+                                            type='email'
+                                            className={cn(
+                                                'pl-10 border-2 transition-all duration-200',
+                                                'focus:ring-2 focus:ring-offset-2',
+                                                errors.email 
+                                                    ? 'border-red-500 focus:ring-red-500' 
+                                                    : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500',
+                                                'group-hover:border-indigo-400'
+                                            )}
+                                            disabled={isLoading}
+                                            value={input.email}
+                                            onChange={handleInputChange}
+                                            placeholder='you@example.com'
+                                        />
+                                        {errors.email && (
+                                            <motion.p 
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className='text-red-500 text-xs mt-1'
+                                            >
+                                                {errors.email}
+                                            </motion.p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Password */}
+                                <div>
+                                    <Label htmlFor='password' className='text-gray-700 dark:text-gray-300'>Password</Label>
+                                    <div className='relative mt-1 group'>
+                                        <Lock className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-indigo-500 transition-colors' size={18} />
+                                        <Input
+                                            id='password'
+                                            name='password'
+                                            type='password'
+                                            className={cn(
+                                                'pl-10 border-2 transition-all duration-200',
+                                                'focus:ring-2 focus:ring-offset-2',
+                                                errors.password 
+                                                    ? 'border-red-500 focus:ring-red-500' 
+                                                    : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500',
+                                                'group-hover:border-indigo-400'
+                                            )}
+                                            disabled={isLoading}
+                                            value={input.password}
+                                            onChange={handleInputChange}
+                                            placeholder='••••••••'
+                                        />
+                                        {errors.password && (
+                                            <motion.p 
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className='text-red-500 text-xs mt-1'
+                                            >
+                                                {errors.password}
+                                            </motion.p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Remember Me & Forgot Password */}
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center">
+                                        <input
+                                            id="remember-me"
+                                            name="remember-me"
+                                            type="checkbox"
+                                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                        />
+                                        <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                                            Remember me
+                                        </label>
+                                    </div>
+
+                                    <div className="text-sm">
+                                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                            Forgot password?
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {/* Submit Button */}
+                                <motion.div
+                                    whileHover={{ scale: 1.01 }}
+                                    whileTap={{ scale: 0.99 }}
+                                >
+                                    <Button
+                                        type='submit'
+                                        disabled={isLoading}
+                                        className='w-full py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2'
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <Loader2 className='animate-spin' size={20} />
+                                                <span>Signing in...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>Sign in</span>
+                                                <ArrowRight size={18} />
+                                            </>
+                                        )}
+                                    </Button>
+                                </motion.div>
+                            </motion.div>
+                        </form>
+
+                        <motion.p 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4 }}
+                            className='mt-6 text-center text-sm text-gray-600 dark:text-gray-400'
+                        >
+                            Don't have an account?{' '}
+                            <Link 
+                                to='/signup' 
+                                className='font-medium text-indigo-600 hover:text-indigo-500 transition-colors'
+                            >
+                                Sign up
+                            </Link>
+                        </motion.p>
+                    </div>
+                    <InterviewCTA />
+                </motion.div>
+        
+
+
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                    <AuthCTA />
+                </motion.div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Login;

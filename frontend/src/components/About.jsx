@@ -1,7 +1,5 @@
 import React from 'react';
 import { Users, Briefcase, Award, TrendingUp, CheckCircle } from 'lucide-react';
-import Layout from './Layout';
-import Footer from './shared/Footer';
 import { motion } from 'framer-motion';
 
 const About = () => {
@@ -12,8 +10,8 @@ const About = () => {
   };
 
   return (
-    <Layout>
-      <div className="bg-gradient-to-b from-[#E1D7B7] pt-20 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen">
+    <div>
+      <div className=" pt-10  dark:from-gray-900 dark:to-gray-800 min-h-screen">
         <div className="container mx-auto px-4 py-16">
           <motion.h1 
             className="text-5xl md:text-6xl font-bold text-center mb-8 text-gray-800 dark:text-white"
@@ -95,8 +93,8 @@ const About = () => {
           </motion.div>
         </div>
       </div>
-      <Footer />
-    </Layout>
+    </div>
+    
   );
 };
 

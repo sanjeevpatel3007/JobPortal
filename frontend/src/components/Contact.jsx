@@ -12,8 +12,8 @@ const Contact = () => {
   };
 
   return (
-    <Layout>
-      <div className="bg-gradient-to-b from-[#E1D7B7] pt-20 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen">
+    
+      <div className="pt-10 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen">
         <div className="container mx-auto px-4 py-16">
           <motion.h1 
             className="text-5xl md:text-6xl font-bold text-center mb-12 text-gray-800 dark:text-white"
@@ -80,8 +80,8 @@ const Contact = () => {
           </div>
         </div>
       </div>
-      <Footer />
-    </Layout>
+     
+    
   );
 };
 

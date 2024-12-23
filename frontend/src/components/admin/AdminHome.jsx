@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Building, Briefcase, Users, PlusCircle } from 'lucide-react';
-import Navbar from '../shared/Navbar';
 
 const AdminHome = () => {
   const { companies } = useSelector(store => store.company);
@@ -23,8 +22,8 @@ const AdminHome = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#E1D7B7] to-white dark:from-gray-900 dark:to-gray-800">
-      <Navbar />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+     
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

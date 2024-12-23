@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import Navbar from '../shared/Navbar'
 import ApplicantsTable from './ApplicantsTable'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchApplicants } from '@/redux/applicationSlice'
@@ -20,8 +19,8 @@ const Applicants = () => {
     }, [dispatch, id])
 
     return (
-        <div className='dark:bg-gray-900 bg-[#E1D7B7] min-h-screen'>
-            <Navbar />
+        <div className='dark:bg-gray-900 bg-gray-50 min-h-screen'>
+          
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

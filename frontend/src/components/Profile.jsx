@@ -16,7 +16,7 @@ const Profile = () => {
 
     return (
         <div className='bg-gray-100 pt-16 dark:bg-gray-900 min-h-screen'>
-            <Navbar />
+          
             <div className='max-w-4xl mx-auto my-8 px-4'>
                 <div className='bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden'>
                     <div className='p-6 sm:p-8'>

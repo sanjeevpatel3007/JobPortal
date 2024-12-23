@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from '../shared/Navbar'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button' 
 import { useNavigate } from 'react-router-dom' 
@@ -21,13 +20,7 @@ const AdminJobs = () => {
   }, [input]);
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className='dark:bg-gray-900 bg-[#E1D7B7] min-h-screen'
-    >
-      <Navbar />
+    <div className='dark:bg-gray-900 bg-gray-50 min-h-screen'>
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -64,7 +57,7 @@ const AdminJobs = () => {
           <AdminJobsTable onJobClick={(jobId) => navigate(`/admin/jobs/${jobId}`)} />
         </motion.div>
       </motion.div>
-    </motion.div>
+    </div>
   )
 }
 

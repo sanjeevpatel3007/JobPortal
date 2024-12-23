@@ -53,6 +53,8 @@ const Navbar = () => {
       return (
         <>
           <Link to="/" className='nav-link'>Home</Link>
+          {/* <Link to="/resume-builder" className='nav-link ' >resume create</Link> */}
+          {/* <Link to="/ats-score" className='nav-link' >view Resume Score</Link> */}
           <Link to="/jobs" className='nav-link'>Jobs</Link>
           <Link to="/browse" className='nav-link'>Browse</Link>
           <Link to="/about" className='nav-link'>About</Link>
@@ -63,9 +65,9 @@ const Navbar = () => {
   }
 
   return (
-    <nav className='bg-white dark:bg-gray-900 text-gray-800 dark:text-white fixed top-0 left-0 right-0 z-50 shadow-md'>
+    <nav className='bg-white dark:bg-gray-900 text-gray-800 dark:text-white  top-0 left-0 right-0 z-50 shadow-md w-full h-16'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-        <div className='flex items-center justify-between h-20'>
+        <div className='flex items-center justify-between h-16'>
           {/* Logo */}
           <Link to={user && user.role === 'recruiter' ? "/admin" : "/"} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <div className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full flex items-center justify-center">

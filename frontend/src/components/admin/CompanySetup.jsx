@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from '../shared/Navbar'
 import { Button } from '../ui/button'
 import { ArrowLeft, Loader2, Building2 } from 'lucide-react'
 import { Label } from '../ui/label'
@@ -93,8 +92,8 @@ const CompanySetup = () => {
     },[singleCompany]);
 
     return (
-        <div className='bg-gradient-to-b from-[#E1D7B7] to-white dark:from-gray-900 dark:to-gray-800 min-h-screen pt-20'>
-            <Navbar />
+        <div className='bg-gray-50 dark:bg-gray-900 min-h-screen pt-20'>
+           
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
