@@ -2,6 +2,21 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { APPLICATION_API_END_POINT } from "@/utils/constant";
 
+// export const fetchApplicants = createAsyncThunk(
+//   "application/fetchApplicants",
+//   async (jobId = null, { rejectWithValue }) => {
+//     try {
+//       const url = jobId 
+//         ? `${APPLICATION_API_END_POINT}/job/${jobId}`
+//         : APPLICATION_API_END_POINT
+//       const response = await axios.get(url, { withCredentials: true });
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response.data);
+//     }
+//   }
+// );
+
 export const fetchApplicants = createAsyncThunk(
   "application/fetchApplicants",
   async (jobId = null, { rejectWithValue }) => {
@@ -9,10 +24,42 @@ export const fetchApplicants = createAsyncThunk(
       const url = jobId 
         ? `${APPLICATION_API_END_POINT}/job/${jobId}`
         : APPLICATION_API_END_POINT
-      const response = await axios.get(url, { withCredentials: true });
-      return response.data;
+      
+      console.log("Fetching applicants from URL:", url);
+      
+      const response = await axios.get(url, { 
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      console.log("Full API Response:", JSON.stringify(response.data, null, 2));
+      
+      // More robust way to extract applications
+      const applicationsData = response.data.data?.applications || 
+                                response.data.applications || 
+                                response.data || 
+                                [];
+      
+      console.log("Extracted Applicants:", applicationsData);
+      
+      if (applicationsData.length === 0) {
+        console.warn("No applications found in the response");
+      }
+      
+      return applicationsData;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      console.error("Fetch Applicants Full Error:", error);
+      console.error("Error Response:", error.response?.data);
+      console.error("Error Status:", error.response?.status);
+      console.error("Error Headers:", error.response?.headers);
+      
+      return rejectWithValue({
+        message: error.response?.data?.message || "Failed to fetch applicants",
+        status: error.response?.status,
+        data: error.response?.data
+      });
     }
   }
 );
@@ -36,11 +83,14 @@ const applicationSlice = createSlice({
             })
             .addCase(fetchApplicants.fulfilled, (state, action) => {
                 state.loading = false;
-                state.applicants = action.payload;
+                // Ensure we're setting an array
+                state.applicants = Array.isArray(action.payload) ? action.payload : [];
+                console.log("Applicants in slice:", state.applicants);
             })
             .addCase(fetchApplicants.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                console.error("Applicants fetch error:", action.payload);
             });
     }
 });

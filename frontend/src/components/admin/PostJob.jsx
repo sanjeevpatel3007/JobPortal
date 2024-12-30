@@ -64,30 +64,82 @@ const PostJob = () => {
         if (!validateForm()) return;
         try {
             setLoading(true);
+            
+            // Validate company selection
+            if (!input.company) {
+                toast.error("Please select a company before posting a job");
+                setLoading(false);
+                return;
+            }
+
+            // Ensure requirements are processed
+            const processedRequirements = input.requirements
+                .split('\n')
+                .map(req => req.trim())
+                .filter(req => req && req !== 'Responsibilities:')
+                .join(', ');
+
             const formattedInput = {
-                ...input,
+                title: input.title,
+                description: input.description,
+                requirements: processedRequirements,
                 salary: parseFloat(input.salary),
                 experience: parseInt(input.experience),
+                location: input.location,
+                jobType: input.jobType,
                 position: parseInt(input.position),
-                // requirements are sent as is, backend will split it
+                companyId: input.company  // Explicitly use companyId
             };
-            const res = await axios.post(`${JOB_API_END_POINT}/post`, formattedInput, {
+            
+            console.log("Submitting job with data:", formattedInput);
+            
+            // Detailed axios configuration
+            const res = await axios({
+                method: 'post',
+                url: `${JOB_API_END_POINT}/post`,
+                data: formattedInput,
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 withCredentials: true
             });
+            
             if (res.data.success) {
                 toast.success(res.data.message);
                 navigate("/admin/jobs");
             }
         } catch (error) {
-            toast.error(error.response?.data?.message || "An error occurred");
+            console.error("Job posting error:", {
+                status: error.response?.status,
+                data: error.response?.data,
+                message: error.message,
+                url: `${JOB_API_END_POINT}/post`
+            });
+            
+            // More specific error handling
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                if (error.response.status === 400) {
+                    toast.error(error.response.data.message || "Invalid job data. Please check your inputs.");
+                } else if (error.response.status === 401) {
+                    toast.error("Unauthorized. Please log in again.");
+                } else if (error.response.status === 404) {
+                    toast.error("Job posting endpoint not found. Please contact support.");
+                } else {
+                    toast.error("An unexpected error occurred while posting the job.");
+                }
+            } else if (error.request) {
+                // The request was made but no response was received
+                toast.error("No response received from the server. Please check your internet connection.");
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                toast.error("Error setting up job posting request.");
+            }
         } finally {
             setLoading(false);
         }
-    }
-
+    };
     return (
         <div className='bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen pt-5'>
             <motion.div

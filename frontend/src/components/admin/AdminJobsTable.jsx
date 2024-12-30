@@ -7,11 +7,14 @@ import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Badge } from '../ui/badge'
+import { Tab } from 'react-bootstrap'
 
 const AdminJobsTable = ({ onJobClick }) => { 
     const {allAdminJobs, searchJobByText} = useSelector(store=>store.job);
     const [filterJobs, setFilterJobs] = useState(allAdminJobs);
     const navigate = useNavigate();
+    const { singleJob } = useSelector(store => store.job);
+
 
     useEffect(()=>{ 
         const filteredJobs = allAdminJobs.filter((job)=>{
@@ -39,6 +42,7 @@ const AdminJobsTable = ({ onJobClick }) => {
                         <TableHead>Location</TableHead>
                         <TableHead>Salary</TableHead>
                         <TableHead>Date Posted</TableHead>
+                        <TableHead>Total Applied</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Action</TableHead>
                     </TableRow>
@@ -65,6 +69,7 @@ const AdminJobsTable = ({ onJobClick }) => {
                             <TableCell>{job?.location}</TableCell>
                             <TableCell>{job?.salary}</TableCell>
                             <TableCell>{new Date(job?.createdAt).toLocaleDateString()}</TableCell>
+                         <TableCell>{ singleJob?.applications?.length|| 0}</TableCell> 
                             <TableCell>
                                 <Badge variant={job?.isActive ? "success" : "secondary"}>
                                     {job?.isActive ? "Active" : "Inactive"}

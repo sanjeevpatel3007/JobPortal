@@ -9,6 +9,7 @@ const JobDetails = () => {
   const { id } = useParams();
   const { allAdminJobs } = useSelector(store => store.job);
   const [job, setJob] = useState(null);
+  const { singleJob } = useSelector(store => store.job);
 
   useEffect(() => {
     const selectedJob = allAdminJobs.find(job => job._id === id);
@@ -60,7 +61,7 @@ const JobDetails = () => {
           <div className="flex items-center justify-between mt-6">
             <div className="flex items-center">
               <Users className="w-5 h-5 mr-2 text-gray-500" />
-              <span className="text-gray-700 dark:text-gray-300">{job.applicants?.length || 0} Applicants</span>
+              <span className="text-gray-700 dark:text-gray-300">{ singleJob?.applications?.length|| 0} Applicants</span>
             </div>
             <Link 
               to={`/admin/jobs/${job._id}/applicants`}

@@ -1,19 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Building, Briefcase, Users, PlusCircle } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { fetchApplicants } from '../../redux/applicationSlice';
 
 const AdminHome = () => {
+  const dispatch = useDispatch();
   const { companies } = useSelector(store => store.company);
   const { allAdminJobs } = useSelector(store => store.job);
   const { applicants } = useSelector(store => store.application);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Fetch all applicants when component mounts
+    dispatch(fetchApplicants());
+  }, [dispatch]);
+
   const stats = [
     { title: 'Total Companies', value: companies.length, icon: Building, color: 'bg-blue-500', onClick: () => navigate('/admin/companies') },
-    { title: 'Total Jobs', value: allAdminJobs.length, icon: Briefcase, color: 'bg-green-500', onClick: () => navigate('/admin/jobs') },
-    { title: 'Total Applicants', value: applicants?.applications?.length || 0, icon: Users, color: 'bg-purple-500', onClick: () => navigate('/admin/applicants') },
+    { title: 'Listed Jobs', value: allAdminJobs.length, icon: Briefcase, color: 'bg-green-500', onClick: () => navigate('/admin/jobs') },
+    { title: 'Total Applicants', value: applicants?.length || 0, icon: Users, color: 'bg-purple-500', onClick: () => navigate('/admin/applicants') },
   ];
 
   const quickLinks = [

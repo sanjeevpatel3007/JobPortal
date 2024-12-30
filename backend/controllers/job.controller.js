@@ -6,33 +6,113 @@ export const postJob = async (req, res) => {
         const { title, description, requirements, salary, location, jobType, experience, position, companyId } = req.body;
         const userId = req.id;
 
-        if (!title || !description || !requirements || !salary || !location || !jobType || !experience || !position || !companyId) {
+        console.log("Received job posting data:", {
+            title, 
+            description, 
+            requirements, 
+            salary, 
+            location, 
+            jobType, 
+            experience, 
+            position, 
+            companyId,
+            userId
+        });
+
+        // Validate all required fields
+        const requiredFields = [
+            { name: 'title', value: title },
+            { name: 'description', value: description },
+            { name: 'requirements', value: requirements },
+            { name: 'salary', value: salary },
+            { name: 'location', value: location },
+            { name: 'jobType', value: jobType },
+            { name: 'experience', value: experience },
+            { name: 'position', value: position },
+            { name: 'companyId', value: companyId }
+        ];
+
+        const missingFields = requiredFields
+            .filter(field => !field.value)
+            .map(field => field.name);
+
+        if (missingFields.length > 0) {
             return res.status(400).json({
-                message: "Somethin is missing.",
+                message: `Missing required fields: ${missingFields.join(', ')}`,
+                missingFields,
                 success: false
-            })
-        };
+            });
+        }
+
+        // Validate numeric fields
+        if (isNaN(Number(salary)) || Number(salary) <= 0) {
+            return res.status(400).json({
+                message: "Invalid salary. Must be a positive number.",
+                success: false
+            });
+        }
+
+        if (isNaN(Number(experience)) || Number(experience) < 0) {
+            return res.status(400).json({
+                message: "Invalid experience level. Must be a non-negative number.",
+                success: false
+            });
+        }
+
+        if (isNaN(Number(position)) || Number(position) <= 0) {
+            return res.status(400).json({
+                message: "Invalid number of positions. Must be a positive number.",
+                success: false
+            });
+        }
+
         const job = await Job.create({
             title,
             description,
-            requirements: requirements.split(","),
+            requirements: requirements.split(",").map(req => req.trim()),
             salary: Number(salary),
             location,
             jobType,
             experienceLevel: experience,
-            position,
+            position: Number(position),
             company: companyId,
             created_by: userId
         });
+
         return res.status(201).json({
             message: "New job created successfully.",
             job,
             success: true
         });
     } catch (error) {
-        console.log(error);
+        console.error("Job creation error:", error);
+        
+        // Handle specific Mongoose validation errors
+        if (error.name === 'ValidationError') {
+            const validationErrors = Object.values(error.errors).map(err => err.message);
+            return res.status(400).json({
+                message: "Validation failed",
+                errors: validationErrors,
+                success: false
+            });
+        }
+
+        // Handle duplicate key errors
+        if (error.code === 11000) {
+            return res.status(409).json({
+                message: "A job with similar details already exists.",
+                success: false
+            });
+        }
+
+        // Generic server error
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false,
+            error: error.message
+        });
     }
-}
+};
 // student k liye
 export const getAllJobs = async (req, res) => {
     try {

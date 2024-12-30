@@ -11,5 +11,4 @@ export const COMPANY_API_END_POINT="https://jobportal-backend-ov5w.onrender.com/
 // export const COMPANY_API_END_POINT="http://localhost:8000/api/v1/company";
 // export const BASE_URL = "http://localhost:8000/api";
 
-
 export const ATS_RESUME_SCORE_END_POINT = `${BASE_URL}/analyze-resume`;
