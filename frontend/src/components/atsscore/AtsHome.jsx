@@ -117,7 +117,7 @@ export default function AtsHome() {
           <FileUpload onFileUpload={handleFileUpload} />
         </motion.div>
         <div>
-        <CTASection />
+        {/* <CTASection /> */}
 
         </div>
         {loading && (
@@ -132,6 +132,7 @@ export default function AtsHome() {
           </motion.div>
         )}
 
+        {/* <CTASection /> */}
         {score && analysis && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -163,6 +164,7 @@ export default function AtsHome() {
             <p className="text-red-600">{error}</p>
           </motion.div>
         )}
+        <CTASection />
       </div>
     </div>
   );
