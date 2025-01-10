@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, X, Loader } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -5,6 +7,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Initialize the Gemini AI client
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+
 const genAI = new GoogleGenerativeAI(API_KEY);
 
 const INITIAL_MESSAGE = "Hello! I'm JobLynk's AI assistant. How can I help you with job searching or career advice?";
