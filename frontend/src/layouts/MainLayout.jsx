@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Navbar from '../components/shared/Navbar';
 import FloatingActions from '../components/FloatingActions';
-
+import Footer from '../components/shared/Footer';
 const MainLayout = ({ children }) => {
   const location = useLocation();
   const { user } = useSelector(store => store.auth);
@@ -33,8 +33,10 @@ const MainLayout = ({ children }) => {
         }>
           {children}
         </Suspense>
+        
       </div>
       {!shouldHideActions && user?.role !== 'recruiter' && <FloatingActions />}
+     
     </div>
   );
 };

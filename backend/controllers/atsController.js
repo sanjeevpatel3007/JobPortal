@@ -5,12 +5,48 @@ import mammoth from 'mammoth';
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// Validate API key on startup
+if (!process.env.GEMINI_API_KEY) {
+  console.error("GEMINI_API_KEY is not configured in environment variables");
+}
+
+// Retry configuration
+const MAX_RETRIES = 3;
+const INITIAL_RETRY_DELAY = 1000; // 1 second
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const retryWithExponentialBackoff = async (operation, retries = MAX_RETRIES, delay = INITIAL_RETRY_DELAY) => {
+  try {
+    return await operation();
+  } catch (error) {
+    if (retries > 0) {
+      console.log(`Retrying operation. Attempts remaining: ${retries-1}`);
+      await sleep(delay);
+      return retryWithExponentialBackoff(operation, retries - 1, delay * 2);
+    }
+    throw error;
+  }
+};
+
 export const analyzeResume = async (req, res) => {
   try {
     const resumeFile = req.file;
     if (!resumeFile) {
       console.error("Error: No file uploaded.");
       return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    // Validate file size (5MB limit)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    if (resumeFile.size > MAX_FILE_SIZE) {
+      return res.status(400).json({ error: "File size exceeds 5MB limit" });
+    }
+
+    // Validate file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(resumeFile.mimetype)) {
+      return res.status(400).json({ error: "Invalid file type. Only PDF and Word documents are allowed" });
     }
 
     // Convert file to text
@@ -22,10 +58,13 @@ export const analyzeResume = async (req, res) => {
       } else if (resumeFile.mimetype.includes('document')) {
         const result = await mammoth.extractRawText({ buffer: resumeFile.buffer });
         resumeText = result.value;
-      } else {
-        console.error(`Unsupported file type: ${resumeFile.mimetype}`);
-        return res.status(400).json({ error: "Unsupported file type" });
       }
+
+      // Validate extracted text
+      if (!resumeText || resumeText.trim().length === 0) {
+        return res.status(400).json({ error: "Could not extract text from file. Please ensure the file is not empty or corrupted" });
+      }
+
     } catch (fileProcessingError) {
       console.error("File processing error:", fileProcessingError);
       return res.status(500).json({ error: "Error processing file" });
@@ -63,20 +102,46 @@ export const analyzeResume = async (req, res) => {
     `;
 
     try {
-      // Generate analysis using Gemini
+      // Generate analysis using Gemini with retry logic
       const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const analysisText = response.text();
+      
+      const generateAnalysis = async () => {
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('AI request timeout')), 30000)
+        );
+        
+        const analysisPromise = model.generateContent(prompt);
+        const result = await Promise.race([analysisPromise, timeoutPromise]);
+        
+        if (!result || !result.response) {
+          throw new Error('Empty response from AI model');
+        }
+        
+        const response = result.response;
+        const analysisText = response.text();
+
+        if (!analysisText || analysisText.trim().length === 0) {
+          throw new Error('Empty analysis text from AI model');
+        }
+
+        return analysisText;
+      };
+
+      const analysisText = await retryWithExponentialBackoff(generateAnalysis);
 
       // Parse the response
       const scoreMatch = analysisText.match(/ATS Score:\s*(\d+)\/100/i);
-      let score = 75; // Default score
+      let score;
 
       if (scoreMatch) {
         score = parseInt(scoreMatch[1]);
+        // Validate score is within range
+        if (isNaN(score) || score < 0 || score > 100) {
+          throw new Error('Invalid score format from AI model');
+        }
       } else {
-        console.warn("No explicit ATS score found in the analysis response. Falling back to keyword-based scoring.");
+        // Only use keyword-based scoring as fallback
+        console.warn("No explicit ATS score found in the analysis response. Using keyword-based scoring.");
         const keywordMatches = {
           experience: resumeText.match(/experience|worked|managed|led|developed/gi),
           skills: resumeText.match(/skills|proficient|expertise|competent/gi),
@@ -85,12 +150,17 @@ export const analyzeResume = async (req, res) => {
           contact: resumeText.match(/email|phone|linkedin|github/gi)
         };
 
-        score = Object.values(keywordMatches).reduce((total, matches) => {
-          return total + (matches ? matches.length * 5 : 0);
-        }, 50); // Base score of 50
-
-        // Cap the score at 100
-        score = Math.min(score, 100);
+        const matchCount = Object.values(keywordMatches)
+          .reduce((total, matches) => total + (matches ? matches.length : 0), 0);
+        
+        // Improved scoring algorithm
+        score = Math.min(
+          Math.max(
+            50 + (matchCount * 5), // Base score plus keyword matches
+            Math.ceil(resumeText.length / 100) // Minimum score based on content length
+          ),
+          100 // Maximum score
+        );
       }
 
       // Split the analysis into sections
@@ -133,11 +203,28 @@ export const analyzeResume = async (req, res) => {
 
     } catch (genAIError) {
       console.error("Error generating analysis using Gemini:", genAIError);
-      return res.status(500).json({ error: "Error generating analysis using AI model" });
+      
+      // Provide more specific error messages
+      let errorMessage = "Error generating analysis using AI model";
+      if (genAIError.message.includes('timeout')) {
+        errorMessage = "Analysis request timed out. Please try again.";
+      } else if (genAIError.message.includes('Empty response')) {
+        errorMessage = "AI model returned empty response. Please try again.";
+      } else if (genAIError.name === 'TypeError') {
+        errorMessage = "Invalid response format from AI model. Please try again.";
+      }
+      
+      return res.status(500).json({ 
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? genAIError.message : undefined
+      });
     }
 
   } catch (error) {
     console.error("Analysis error:", error);
-    res.status(500).json({ error: error.message || "Error analyzing resume" });
+    res.status(500).json({ 
+      error: error.message || "Error analyzing resume",
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };

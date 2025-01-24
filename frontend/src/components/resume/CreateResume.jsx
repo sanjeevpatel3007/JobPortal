@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
 import useGeminiAI from '@/hooks/useGeminiAI';
+import { ChevronRight, ChevronLeft, Save, Loader2 } from 'lucide-react';
 
 // Import section components
 import PersonalInfoSection from './form-sections/PersonalInfoSection';
@@ -15,6 +16,44 @@ import PreviewSection from './form-sections/PreviewSection';
 
 // Import constants
 import { STEPS } from './constants/steps';
+
+const stepInfo = {
+  [STEPS.PERSONAL]: {
+    title: 'Personal Information',
+    description: 'Start with your basic details',
+    color: 'from-blue-500 to-purple-600'
+  },
+  [STEPS.EDUCATION]: {
+    title: 'Education',
+    description: 'Add your academic background',
+    color: 'from-green-500 to-teal-600'
+  },
+  [STEPS.EXPERIENCE]: {
+    title: 'Experience',
+    description: 'Share your work history',
+    color: 'from-orange-500 to-red-600'
+  },
+  [STEPS.SKILLS]: {
+    title: 'Skills',
+    description: 'List your key abilities',
+    color: 'from-purple-500 to-pink-600'
+  },
+  [STEPS.PROJECTS]: {
+    title: 'Projects',
+    description: 'Showcase your achievements',
+    color: 'from-yellow-500 to-orange-600'
+  },
+  [STEPS.SUMMARY]: {
+    title: 'Summary',
+    description: 'Add a professional overview',
+    color: 'from-indigo-500 to-blue-600'
+  },
+  [STEPS.PREVIEW]: {
+    title: 'Preview',
+    description: 'Review your resume',
+    color: 'from-gray-600 to-gray-900'
+  }
+};
 
 const CreateResume = () => {
   const [currentStep, setCurrentStep] = useState(STEPS.PERSONAL);
@@ -467,56 +506,93 @@ const CreateResume = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-6 pb-10">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto px-4"
-      >
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8">
-          {/* Progress Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Create Your Resume</h1>
-            <div className="mt-4">
-              <div className="h-2 bg-gray-200 rounded-full">
-                <div 
-                  className="h-full bg-blue-600 rounded-full transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <div className="mt-2 text-sm text-gray-600">
-                Step {Object.values(STEPS).indexOf(currentStep) + 1} of {Object.values(STEPS).length}
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Progress Bar */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className={`text-2xl font-bold bg-gradient-to-r ${stepInfo[currentStep].color} bg-clip-text text-transparent`}>
+              {stepInfo[currentStep].title}
+            </h2>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              Step {Object.values(STEPS).indexOf(currentStep) + 1} of {Object.values(STEPS).length}
+            </span>
           </div>
-
-          {/* Form Content */}
-          <form onSubmit={(e) => e.preventDefault()} className="space-y-8">
-            {renderStepContent()}
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between mt-8">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={prevStep}
-                disabled={currentStep === STEPS.PERSONAL}
-              >
-                Previous
-              </Button>
-              {currentStep !== STEPS.PREVIEW && (
-                <Button
-                  type="button"
-                  onClick={nextStep}
-                >
-                  Next
-                </Button>
-              )}
-            </div>
-          </form>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">{stepInfo[currentStep].description}</p>
+          <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <motion.div
+              className={`h-full bg-gradient-to-r ${stepInfo[currentStep].color}`}
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
         </div>
-      </motion.div>
+
+        {/* Form Content */}
+        <motion.div
+          key={currentStep}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6"
+        >
+          {renderStepContent()}
+        </motion.div>
+
+        {/* Navigation Buttons */}
+        <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <Button
+            onClick={prevStep}
+            disabled={currentStep === STEPS.PERSONAL}
+            variant="outline"
+            className="w-full sm:w-auto"
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Previous
+          </Button>
+
+          <div className="flex gap-4 w-full sm:w-auto">
+            {currentStep === STEPS.PREVIEW ? (
+              <Button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save Resume
+                  </>
+                )}
+              </Button>
+            ) : (
+              <Button
+                onClick={nextStep}
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700"
+              >
+                Next
+                <ChevronRight className="w-4 h-4 ml-2" />
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* AI Generation Status */}
+        {aiLoading && (
+          <div className="mt-4 text-center">
+            <Loader2 className="w-5 h-5 animate-spin inline-block mr-2" />
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              Generating content with AI...
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

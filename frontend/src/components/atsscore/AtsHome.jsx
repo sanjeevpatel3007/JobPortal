@@ -16,21 +16,48 @@ export default function AtsHome() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 2;
+
+  const validateFile = (file) => {
+    // Check file size (5MB)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error('File size exceeds 5MB limit');
+    }
+
+    // Check file type
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('Invalid file type. Only PDF and Word documents are allowed');
+    }
+
+    return true;
+  };
 
   const handleFileUpload = async (event) => {
-    const uploadedFile = event.target.files[0];
-    if (uploadedFile && (uploadedFile.type === 'application/pdf' || uploadedFile.type.includes('document'))) {
-      setFile(uploadedFile);
+    try {
       setError(null);
+      const uploadedFile = event.target.files[0];
+      
+      if (!uploadedFile) {
+        throw new Error('Please select a file');
+      }
+
+      validateFile(uploadedFile);
+      setFile(uploadedFile);
       await analyzeResume(uploadedFile);
-    } else {
-      setError('Please upload a PDF or Word document');
+    } catch (err) {
+      setError(err.message);
+      setFile(null);
     }
   };
 
   const analyzeResume = async (resumeFile) => {
     try {
       setLoading(true);
+      setError(null);
+      
       const formData = new FormData();
       formData.append('resume', resumeFile);
 
@@ -43,31 +70,40 @@ export default function AtsHome() {
         },
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // If it's an AI model error and we haven't exceeded retries, try again
+        if (data.error?.includes('AI model') && retryCount < MAX_RETRIES) {
+          setRetryCount(prev => prev + 1);
+          console.log(`Retrying analysis... Attempt ${retryCount + 1}/${MAX_RETRIES}`);
+          await analyzeResume(resumeFile);
+          return;
+        }
+        throw new Error(data.error || 'Error analyzing resume');
       }
 
-      const data = await response.json();
-      let extractedScore = data.score;
-      if (!extractedScore && data.analysis) {
-        const scoreItem = data.analysis.find(item => 
-          item.title?.toLowerCase().includes('score') || 
-          item.description?.toLowerCase().includes('score')
-        );
-        if (scoreItem) {
-          const scoreMatch = scoreItem.description.match(/(\d+)\s*(?:out of|\/)\s*100/);
-          if (scoreMatch) {
-            extractedScore = parseInt(scoreMatch[1]);
-          }
-        }
+      if (!data.score || !data.analysis) {
+        throw new Error('Invalid response from server');
       }
-      setScore(extractedScore || 75);
+
+      setScore(data.score);
       setAnalysis(data.analysis);
+      setRetryCount(0); // Reset retry count on success
     } catch (err) {
-      setError('Error analyzing resume. Please try again.');
-      console.error(err);
+      setError(err.message || 'Error analyzing resume. Please try again.');
+      console.error('Resume analysis error:', err);
+      setScore(null);
+      setAnalysis(null);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRetry = () => {
+    if (file) {
+      setRetryCount(0);
+      analyzeResume(file);
     }
   };
 
@@ -128,7 +164,9 @@ export default function AtsHome() {
             className="bg-white rounded-xl shadow-md p-8 text-center"
           >
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-lg text-gray-700">Analyzing your resume...</p>
+            <p className="text-lg text-gray-700">
+              {retryCount > 0 ? `Retrying analysis... Attempt ${retryCount}/${MAX_RETRIES}` : 'Analyzing your resume...'}
+            </p>
           </motion.div>
         )}
 
@@ -161,7 +199,17 @@ export default function AtsHome() {
             animate={{ opacity: 1 }}
             className="bg-red-50 border border-red-200 rounded-lg p-4 mt-4"
           >
-            <p className="text-red-600">{error}</p>
+            <div className="flex flex-col space-y-2">
+              <p className="text-red-600">{error}</p>
+              {error.includes('AI model') && (
+                <button
+                  onClick={handleRetry}
+                  className="bg-red-100 text-red-700 px-4 py-2 rounded-md hover:bg-red-200 transition-colors w-fit"
+                >
+                  Retry Analysis
+                </button>
+              )}
+            </div>
           </motion.div>
         )}
         <CTASection />
