@@ -34,7 +34,14 @@ const Job = ({job}) => {
 
             <div className='mb-4 flex-grow'>
                 <h1 className='font-bold text-xl mb-2'>{job?.title}</h1>
-                <p className='text-sm text-gray-600 dark:text-gray-400 line-clamp-3'>{job?.description}</p>
+                <p className='text-sm text-gray-600 dark:text-gray-400 line-clamp-3'>
+                    
+                    {/* {job?.description} */}
+                    {job?.description?.split(" ").slice(0, 10).join(" ")}...
+
+                    
+                    
+                    </p>
             </div>
 
             <div className='flex flex-wrap items-center gap-2 mb-4'>

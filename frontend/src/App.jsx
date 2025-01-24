@@ -1,4 +1,7 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { Suspense } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { publicRoutes } from './routes/publicRoutes';
+import { adminRoutes } from './routes/adminRoutes';
 import Layout from './components/Layout'
 import Navbar from './components/shared/Navbar'
 import Login from './components/auth/Login'
@@ -26,119 +29,18 @@ import ViewResumeTemplate from './components/atsscore/components/ViewResumeTempl
 import NotFound from './components/NotFound'
 
 const appRouter = createBrowserRouter([
-  {
-    path: '/',
-    element: <Layout>
-      <Home />
-      </Layout>
-  },
-  {
-    path: '/login',
-    element:  <Layout>  <Login /></Layout> 
-  },
-  { path: '/*',
-    element: <Layout>
-     
-      
-      <NotFound/>
-    </Layout>
-
-  },
-  {
-    path: '/signup',
-    element: <Layout><Signup /></Layout>
-  },
-  {
-    path: "/jobs",
-    element: <Layout><Jobs /></Layout>
-  },
- 
-  {
-    path: "/saved-jobs",
-    element: <Layout><SavedJobs /></Layout>
-  },
-  {
-    path: "/description/:id",
-    element: (
-      // <ProtectedRoute>
-        <Layout><JobDescription /></Layout>
-      // </ProtectedRoute>
-    )
-  },
-  {
-    path: "/browse",
-    element: <Layout><Browse /></Layout>
-  },
-  {
-    path:"/resume-builder",
-    element:<Layout><CreateResume/></Layout>
-  },
-  {
-    path:"/ats-score",
-    element:<Layout><AtsHome/></Layout>
-  
-  },
-  {
-    path: "/resume-templates",
-    element: <Layout><ViewResumeTemplate /></Layout>
-  },
-  {
-    path: "/profile",
-    element: <Layout><Profile /></Layout>
-  },
-  {
-    path: "/about",
-    element: <Layout><About /></Layout>
-  },
-  {
-    path: "/contact",
-    element: <Layout><Contact /></Layout>
-  },
-  // admin routes
-  {
-    path: "/admin",
-    element: <ProtectedRoute><Layout><AdminHome /></Layout></ProtectedRoute>
-  },
-  {
-    path:"/admin/companies",
-    element: <ProtectedRoute><Layout><Companies/></Layout></ProtectedRoute>
-  },
-  {
-    path:"/admin/companies/create",
-    element: <ProtectedRoute><Layout><CompanyCreate/></Layout></ProtectedRoute> 
-  },
-  {
-    path:"/admin/companies/:id",
-    element:<ProtectedRoute><Layout><CompanySetup/></Layout></ProtectedRoute> 
-  },
-  {
-    path:"/admin/jobs",
-    element:<ProtectedRoute><Layout><AdminJobs/></Layout></ProtectedRoute> 
-  },
-  {
-    path:"/admin/jobs/create",
-    element:<ProtectedRoute><Layout><PostJob/></Layout></ProtectedRoute> 
-  },
-  {
-    path:"/admin/jobs/:id/applicants",
-    element:<ProtectedRoute><Layout><Applicants/></Layout></ProtectedRoute> 
-  },
-  {
-    path: "/admin/jobs/:id",
-    element: <ProtectedRoute><Layout><JobDetails /></Layout></ProtectedRoute>
-  },
-  {
-    path: "/admin/applicants",
-    element: <ProtectedRoute><Layout><Applicants /></Layout></ProtectedRoute>
-  },
-])
+  ...publicRoutes,
+  ...adminRoutes
+]);
 
 function App() {
   return (
     <div className="App">
-      <RouterProvider router={appRouter} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <RouterProvider router={appRouter} />
+      </Suspense>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

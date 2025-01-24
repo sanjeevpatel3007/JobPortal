@@ -18,6 +18,11 @@ const Navbar = () => {
   const location = useLocation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false)
+  }, [location.pathname])
+
   useEffect(() => {
     if (user && user.role === 'recruiter' && location.pathname === '/login') {
       navigate('/admin')
@@ -38,35 +43,39 @@ const Navbar = () => {
     }
   }
 
-  const NavLinks = () => {
+  const NavLinks = ({ isMobile }) => {
+    const linkClass = isMobile 
+      ? 'block px-4 py-3 text-base font-medium hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200'
+      : 'nav-link'
+
     if (user && user.role === 'recruiter') {
       return (
         <>
-          <Link to="/admin" className='nav-link flex items-center'>
-            <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+          <Link to="/admin" className={linkClass}>
+            <span className='flex items-center'>
+              <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+            </span>
           </Link>
-          <Link to="/jobs" className='nav-link'>Jobs</Link>
-          <Link to="/contact" className='nav-link'>Contact</Link>
+          <Link to="/jobs" className={linkClass}>Jobs</Link>
+          <Link to="/contact" className={linkClass}>Contact</Link>
         </>
       )
     } else {
       return (
         <>
-          <Link to="/" className='nav-link'>Home</Link>
-          {/* <Link to="/resume-builder" className='nav-link ' >resume create</Link> */}
-          {/* <Link to="/ats-score" className='nav-link' >view Resume Score</Link> */}
-          <Link to="/jobs" className='nav-link'>Jobs</Link>
-          <Link to="/browse" className='nav-link'>Browse</Link>
-          <Link to="/about" className='nav-link'>About</Link>
-          <Link to="/contact" className='nav-link'>Contact</Link>
+          <Link to="/" className={linkClass}>Home</Link>
+          {/* <Link to="/jobs" className={linkClass}>Jobs</Link> */}
+          <Link to="/browse" className={linkClass}>Jobs</Link>
+          <Link to="/about" className={linkClass}>About</Link>
+          <Link to="/contact" className={linkClass}>Contact</Link>
         </>
       )
     }
   }
 
   return (
-    <nav className='bg-white dark:bg-gray-900 text-gray-800 dark:text-white  top-0 left-0 right-0 z-50 shadow-md w-full h-16'>
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+    <nav className='sticky bg-white dark:bg-gray-900 text-gray-800 dark:text-white top-0 left-0 right-0 z-50 shadow-md w-full'>
+      <div className='max-w-[1540px] w-[100%] mx-auto px-4'>
         <div className='flex items-center justify-between h-16'>
           {/* Logo */}
           <Link to={user && user.role === 'recruiter' ? "/admin" : "/"} className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
@@ -80,9 +89,7 @@ const Navbar = () => {
 
           {/* Desktop menu */}
           <div className='hidden md:flex items-center space-x-6'>
-            <NavLinks />
-            {/* // dark light light mode button */}
-            {/* <ThemeToggle /> */}
+            <NavLinks isMobile={false} />
             {!user ? (
               <div className='flex items-center space-x-3'>
                 <Link to="/login">
@@ -131,7 +138,10 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <div className='md:hidden'>
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className='text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300'>
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)} 
+              className='text-gray-800 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-300 p-2'
+            >
               {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
@@ -142,17 +152,17 @@ const Navbar = () => {
       {isMenuOpen && (
         <div className='md:hidden bg-white dark:bg-gray-900 shadow-lg animate-fadeIn'>
           <div className='px-2 pt-2 pb-3 space-y-1'>
-            <NavLinks />
+            <NavLinks isMobile={true} />
           </div>
           <div className='pt-4 pb-3 border-t border-gray-200 dark:border-gray-700'>
-            <div className='flex items-center justify-between px-5'>
-              <ThemeToggle />
+            <div className='px-4 flex items-center justify-between'>
+              {/* <ThemeToggle /> */}
               {!user ? (
                 <div className='flex items-center space-x-2'>
-                  <Link to="/login">
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                     <Button variant="outline" className='text-blue-600 border-blue-600 hover:bg-blue-600 hover:text-white transition-colors duration-300'>Login</Button>
                   </Link>
-                  <Link to="/signup">
+                  <Link to="/signup" onClick={() => setIsMenuOpen(false)}>
                     <Button className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300">Signup</Button>
                   </Link>
                 </div>
@@ -169,18 +179,27 @@ const Navbar = () => {
               )}
             </div>
             {user && (
-              <div className='mt-3 px-2 space-y-1'>
+              <div className='mt-3 px-4 space-y-1'>
                 {user.role === 'student' && (
-                  <Button variant="ghost" className='w-full justify-start hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors duration-300' onClick={() => navigate('/profile')}>
+                  <Button variant="ghost" className='w-full justify-start hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors duration-300' onClick={() => {
+                    navigate('/profile')
+                    setIsMenuOpen(false)
+                  }}>
                     <User2 className="mr-2 h-4 w-4" /> View Profile
                   </Button>
                 )}
                 {user.role === 'recruiter' && (
-                  <Button variant="ghost" className='w-full justify-start hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors duration-300' onClick={() => navigate('/admin')}>
+                  <Button variant="ghost" className='w-full justify-start hover:bg-blue-50 dark:hover:bg-gray-800 transition-colors duration-300' onClick={() => {
+                    navigate('/admin')
+                    setIsMenuOpen(false)
+                  }}>
                     <LayoutDashboard className="mr-2 h-4 w-4" /> Admin Dashboard
                   </Button>
                 )}
-                <Button variant="ghost" className='w-full justify-start hover:bg-red-50 dark:hover:bg-red-900 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors duration-300' onClick={logoutHandler}>
+                <Button variant="ghost" className='w-full justify-start hover:bg-red-50 dark:hover:bg-red-900 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-colors duration-300' onClick={() => {
+                  logoutHandler()
+                  setIsMenuOpen(false)
+                }}>
                   <LogOut className="mr-2 h-4 w-4" /> Logout
                 </Button>
               </div>
