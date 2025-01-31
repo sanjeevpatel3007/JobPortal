@@ -96,19 +96,20 @@ const Login = () => {
     }, [user, navigate]);
 
     return (
-        <div className='min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-12 px-4 sm:px-6 lg:px-8'>
-            <div className='max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start'>
+        <div className='min-h-screen w-full bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-x-hidden'>
+            <div className='container mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start'>
                 <motion.div 
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5 }}
+                    className="w-full max-w-md mx-auto lg:max-w-lg"
                 >
-                    <div className='bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8'>
+                    <div className='bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-4 sm:p-6 lg:p-8 w-full'>
                         <motion.div 
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className='text-center mb-8'
+                            className='text-center mb-6'
                         >
                             <h2 className='text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>
                                 Welcome back
@@ -118,12 +119,12 @@ const Login = () => {
                             </p>
                         </motion.div>
 
-                        <form onSubmit={submitHandler} className='space-y-6'>
+                        <form onSubmit={submitHandler} className='space-y-4 sm:space-y-6'>
                             <motion.div 
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.3 }}
-                                className='space-y-4'
+                                className='space-y-3 sm:space-y-4'
                             >
                                 {/* Email */}
                                 <div>
@@ -135,7 +136,7 @@ const Login = () => {
                                             name='email'
                                             type='email'
                                             className={cn(
-                                                'pl-10 border-2 transition-all duration-200',
+                                                'pl-10 border-2 transition-all duration-200 w-full',
                                                 'focus:ring-2 focus:ring-offset-2',
                                                 errors.email 
                                                     ? 'border-red-500 focus:ring-red-500' 
@@ -169,7 +170,7 @@ const Login = () => {
                                             name='password'
                                             type='password'
                                             className={cn(
-                                                'pl-10 border-2 transition-all duration-200',
+                                                'pl-10 border-2 transition-all duration-200 w-full',
                                                 'focus:ring-2 focus:ring-offset-2',
                                                 errors.password 
                                                     ? 'border-red-500 focus:ring-red-500' 
@@ -194,7 +195,7 @@ const Login = () => {
                                 </div>
 
                                 {/* Remember Me & Forgot Password */}
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between flex-wrap gap-2">
                                     <div className="flex items-center">
                                         <input
                                             id="remember-me"
@@ -255,15 +256,14 @@ const Login = () => {
                             </Link>
                         </motion.p>
                     </div>
-                    <InterviewCTA />
+                    <InterviewCTA className="mt-6" />
                 </motion.div>
-        
-
 
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
+                    className="hidden lg:block"
                 >
                     <AuthCTA />
                 </motion.div>
