@@ -23,9 +23,9 @@ const MainLayout = ({ children }) => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen w-full bg-background overflow-x-hidden">
       <Navbar />
-      <div className="max-w-[1540px] w-[100%] mx-auto">
+      <div className="w-[100%] max-w-[1920px] mx-auto">
         <Suspense fallback={
           <div className="flex items-center justify-center min-h-[60vh]">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
@@ -33,10 +33,9 @@ const MainLayout = ({ children }) => {
         }>
           {children}
         </Suspense>
-        
       </div>
       {!shouldHideActions && user?.role !== 'recruiter' && <FloatingActions />}
-     
+      <Footer />
     </div>
   );
 };

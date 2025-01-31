@@ -141,241 +141,244 @@ const Signup = () => {
     }, [user]);
 
     return (
-        <div className='min-h-screen w-full bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-x-hidden'>
-            <div className='container mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start'>
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full"
-                >
-                    <div className='w-full max-w-md mx-auto lg:max-w-lg'>
-                        <div className='bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-4 sm:p-6 lg:p-8 w-full'>
-                            <div className='text-center mb-6 sm:mb-8'>
-                                <h2 className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>
-                                    Create your account
-                                </h2>
-                                <p className='mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400'>
-                                    Join us to explore opportunities
-                                </p>
-                            </div>
-                            <form onSubmit={submitHandler} className='space-y-4 sm:space-y-6'>
-                                <div className='space-y-3 sm:space-y-4'>
-                                    <div>
-                                        <Label htmlFor='fullname' className='text-gray-700 dark:text-gray-300'>Full Name</Label>
-                                        <div className='relative mt-1'>
-                                            <User className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400' size={18} />
-                                            <Input
-                                                id='fullname'
-                                                name='fullname'
-                                                type='text'
-                                                className={cn(
-                                                    'pl-10 w-full',
-                                                    errors.fullname && 'border-red-500 focus:ring-red-500'
-                                                )}
-                                                value={input.fullname}
-                                                onChange={handleInputChange}
-                                                placeholder="John Doe"
-                                            />
-                                            {errors.fullname && (
-                                                <p className='text-red-500 text-xs mt-1'>{errors.fullname}</p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <Label htmlFor='email' className='text-gray-700 dark:text-gray-300'>Email Address</Label>
-                                        <div className='relative mt-1'>
-                                            <Mail className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400' size={18} />
-                                            <Input
-                                                id='email'
-                                                name='email'
-                                                type='email'
-                                                className={cn(
-                                                    'pl-10 w-full',
-                                                    errors.email && 'border-red-500 focus:ring-red-500'
-                                                )}
-                                                value={input.email}
-                                                onChange={handleInputChange}
-                                                placeholder="you@example.com"
-                                            />
-                                            {errors.email && (
-                                                <p className='text-red-500 text-xs mt-1'>{errors.email}</p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <Label htmlFor='phoneNumber' className='text-gray-700 dark:text-gray-300'>Phone Number</Label>
-                                        <div className='relative mt-1'>
-                                            <Phone className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400' size={18} />
-                                            <Input
-                                                id='phoneNumber'
-                                                name='phoneNumber'
-                                                type='tel'
-                                                className={cn(
-                                                    'pl-10 w-full',
-                                                    errors.phoneNumber && 'border-red-500 focus:ring-red-500'
-                                                )}
-                                                value={input.phoneNumber}
-                                                onChange={handleInputChange}
-                                                placeholder="1234567890"
-                                            />
-                                            {errors.phoneNumber && (
-                                                <p className='text-red-500 text-xs mt-1'>{errors.phoneNumber}</p>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <Label htmlFor='password' className='text-gray-700 dark:text-gray-300'>Password</Label>
-                                        <div className='relative mt-1'>
-                                            <Lock className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400' size={18} />
-                                            <Input
-                                                id='password'
-                                                name='password'
-                                                type='password'
-                                                className={cn(
-                                                    'pl-10 w-full',
-                                                    errors.password && 'border-red-500 focus:ring-red-500'
-                                                )}
-                                                value={input.password}
-                                                onChange={handleInputChange}
-                                                placeholder="••••••••"
-                                            />
-                                            {errors.password && (
-                                                <p className='text-red-500 text-xs mt-1'>{errors.password}</p>
-                                            )}
-                                        </div>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            Must be at least 6 characters long
-                                        </p>
-                                    </div>
-
-                                    <div className='space-y-2'>
-                                        <Label className='text-gray-700 dark:text-gray-300'>Select Role</Label>
-                                        <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 lg:gap-4'>
-                                            <div
-                                                onClick={() => handleInputChange({ target: { name: 'role', value: 'student' } })}
-                                                className={cn(
-                                                    'p-4 rounded-lg border-2 cursor-pointer transition-all',
-                                                    input.role === 'student'
-                                                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
-                                                        : 'border-gray-200 hover:border-indigo-200'
-                                                )}
-                                            >
-                                                <div className='flex items-center justify-between'>
-                                                    <div>
-                                                        <p className='font-medium'>Student</p>
-                                                        <p className='text-xs text-gray-500'>Looking for opportunities</p>
-                                                    </div>
-                                                    {input.role === 'student' && (
-                                                        <CheckCircle2 className='text-indigo-500' size={20} />
+        <div className='min-h-screen w-full bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-hidden'>
+            <div className='w-[100%] max-w-[1920px] mx-auto px-4 py-8 sm:py-12'>
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 items-start'>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-full"
+                    >
+                        <div className='w-full max-w-md mx-auto'>
+                            <div className='bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-4 sm:p-6 lg:p-8'>
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                    className='text-center mb-6 sm:mb-8'
+                                >
+                                    <h2 className='text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>
+                                        Create your account
+                                    </h2>
+                                    <p className='mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400'>
+                                        Join us to explore opportunities
+                                    </p>
+                                </motion.div>
+                                <form onSubmit={submitHandler} className='space-y-4 sm:space-y-6'>
+                                    <div className='space-y-3 sm:space-y-4'>
+                                        <div>
+                                            <Label htmlFor='fullname' className='text-gray-700 dark:text-gray-300'>Full Name</Label>
+                                            <div className='relative mt-1'>
+                                                <Input
+                                                    id='fullname'
+                                                    name='fullname'
+                                                    type='text'
+                                                    className={cn(
+                                                        'w-full',
+                                                        errors.fullname && 'border-red-500 focus:ring-red-500'
                                                     )}
-                                                </div>
-                                            </div>
-
-                                            <div
-                                                onClick={() => handleInputChange({ target: { name: 'role', value: 'recruiter' } })}
-                                                className={cn(
-                                                    'p-4 rounded-lg border-2 cursor-pointer transition-all',
-                                                    input.role === 'recruiter'
-                                                        ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30'
-                                                        : 'border-gray-200 hover:border-purple-200'
+                                                    value={input.fullname}
+                                                    onChange={handleInputChange}
+                                                    placeholder="John Doe"
+                                                />
+                                                {errors.fullname && (
+                                                    <p className='text-red-500 text-xs mt-1'>{errors.fullname}</p>
                                                 )}
-                                            >
-                                                <div className='flex items-center justify-between'>
-                                                    <div>
-                                                        <p className='font-medium'>Recruiter</p>
-                                                        <p className='text-xs text-gray-500'>Hiring talent</p>
-                                                    </div>
-                                                    {input.role === 'recruiter' && (
-                                                        <CheckCircle2 className='text-purple-500' size={20} />
-                                                    )}
-                                                </div>
                                             </div>
-                                             <div className='flex justify-center col-span-2 sm:col-span-1'>
-                                                <div className='relative group'>
-                                                    <div className={cn(
-                                                        'w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200 hover:border-indigo-500 transition-colors',
-                                                        errors.file && 'border-red-500'
-                                                    )}>
-                                                        {previewUrl ? (
-                                                            <img src={previewUrl} alt="Profile preview" className='w-full h-full object-cover' />
-                                                        ) : (
-                                                            <div className='w-full h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center'>
-                                                                <Upload className='w-8 h-8 text-gray-400' />
-                                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <Label htmlFor='email' className='text-gray-700 dark:text-gray-300'>Email Address</Label>
+                                            <div className='relative mt-1'>
+                                                <Input
+                                                    id='email'
+                                                    name='email'
+                                                    type='email'
+                                                    className={cn(
+                                                        'w-full',
+                                                        errors.email && 'border-red-500 focus:ring-red-500'
+                                                    )}
+                                                    value={input.email}
+                                                    onChange={handleInputChange}
+                                                    placeholder="you@example.com"
+                                                />
+                                                {errors.email && (
+                                                    <p className='text-red-500 text-xs mt-1'>{errors.email}</p>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <Label htmlFor='phoneNumber' className='text-gray-700 dark:text-gray-300'>Phone Number</Label>
+                                            <div className='relative mt-1'>
+                                                <Input
+                                                    id='phoneNumber'
+                                                    name='phoneNumber'
+                                                    type='tel'
+                                                    className={cn(
+                                                        'w-full',
+                                                        errors.phoneNumber && 'border-red-500 focus:ring-red-500'
+                                                    )}
+                                                    value={input.phoneNumber}
+                                                    onChange={handleInputChange}
+                                                    placeholder="1234567890"
+                                                />
+                                                {errors.phoneNumber && (
+                                                    <p className='text-red-500 text-xs mt-1'>{errors.phoneNumber}</p>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <Label htmlFor='password' className='text-gray-700 dark:text-gray-300'>Password</Label>
+                                            <div className='relative mt-1'>
+                                                <Input
+                                                    id='password'
+                                                    name='password'
+                                                    type='password'
+                                                    className={cn(
+                                                        'w-full',
+                                                        errors.password && 'border-red-500 focus:ring-red-500'
+                                                    )}
+                                                    value={input.password}
+                                                    onChange={handleInputChange}
+                                                    placeholder="••••••••"
+                                                />
+                                                {errors.password && (
+                                                    <p className='text-red-500 text-xs mt-1'>{errors.password}</p>
+                                                )}
+                                            </div>
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                Must be at least 6 characters long
+                                            </p>
+                                        </div>
+
+                                        <div className='space-y-2'>
+                                            <Label className='text-gray-700 dark:text-gray-300'>Select Role</Label>
+                                            <div className='grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3'>
+                                                <div
+                                                    onClick={() => handleInputChange({ target: { name: 'role', value: 'student' } })}
+                                                    className={cn(
+                                                        'p-4 rounded-lg border-2 cursor-pointer transition-all',
+                                                        input.role === 'student'
+                                                            ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30'
+                                                            : 'border-gray-200 hover:border-indigo-200'
+                                                    )}
+                                                >
+                                                    <div className='flex items-center justify-between'>
+                                                        <div>
+                                                            <p className='font-medium'>Student</p>
+                                                            <p className='text-xs text-gray-500'>Looking for opportunities</p>
+                                                        </div>
+                                                        {input.role === 'student' && (
+                                                            <CheckCircle2 className='text-indigo-500' size={20} />
                                                         )}
                                                     </div>
-                                                    <input
-                                                        type="file"
-                                                        onChange={handleFileChange}
-                                                        className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
-                                                        accept="image/*"
-                                                    />
-                                                    {errors.file && (
-                                                        <p className='text-red-500 text-xs mt-1 text-center'>{errors.file}</p>
+                                                </div>
+
+                                                <div
+                                                    onClick={() => handleInputChange({ target: { name: 'role', value: 'recruiter' } })}
+                                                    className={cn(
+                                                        'p-4 rounded-lg border-2 cursor-pointer transition-all',
+                                                        input.role === 'recruiter'
+                                                            ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/30'
+                                                            : 'border-gray-200 hover:border-purple-200'
                                                     )}
+                                                >
+                                                    <div className='flex items-center justify-between'>
+                                                        <div>
+                                                            <p className='font-medium'>Recruiter</p>
+                                                            <p className='text-xs text-gray-500'>Hiring talent</p>
+                                                        </div>
+                                                        {input.role === 'recruiter' && (
+                                                            <CheckCircle2 className='text-purple-500' size={20} />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                 <div className='flex justify-center col-span-2 sm:col-span-1'>
+                                                    <div className='relative group'>
+                                                        <div className={cn(
+                                                            'w-24 h-24 rounded-full overflow-hidden border-4 border-gray-200 hover:border-indigo-500 transition-colors',
+                                                            errors.file && 'border-red-500'
+                                                        )}>
+                                                            {previewUrl ? (
+                                                                <img src={previewUrl} alt="Profile preview" className='w-full h-full object-cover' />
+                                                            ) : (
+                                                                <div className='w-full h-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center'>
+                                                                    <Upload className='w-8 h-8 text-gray-400' />
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <input
+                                                            type="file"
+                                                            onChange={handleFileChange}
+                                                            className='absolute inset-0 w-full h-full opacity-0 cursor-pointer'
+                                                            accept="image/*"
+                                                        />
+                                                        {errors.file && (
+                                                            <p className='text-red-500 text-xs mt-1 text-center'>{errors.file}</p>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
+                                            {errors.role && (
+                                                <p className='text-red-500 text-xs mt-1'>{errors.role}</p>
+                                            )}
                                         </div>
-                                        {errors.role && (
-                                            <p className='text-red-500 text-xs mt-1'>{errors.role}</p>
-                                        )}
-                                    </div>
 
-                                    <div className="flex items-start space-x-2">
-                                        <div className="flex items-center h-5">
-                                            <input
-                                                id="terms"
-                                                type="checkbox"
-                                                className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
-                                                required
-                                            />
-                                        </div>
-                                        <div className="ml-3 text-sm">
-                                            <label htmlFor="terms" className="font-light text-gray-500 dark:text-gray-300">
-                                                I accept the <a className="font-medium text-blue-600 hover:underline" href="#">Terms and Conditions</a>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <Button
-                                        type='submit'
-                                        disabled={isLoading}
-                                        className='w-full py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
-                                    >
-                                        {isLoading ? (
-                                            <div className="flex items-center justify-center">
-                                                <Loader2 className='animate-spin mr-2' size={20} />
-                                                <span>Creating account...</span>
+                                        <div className="flex items-start space-x-2">
+                                            <div className="flex items-center h-5">
+                                                <input
+                                                    id="terms"
+                                                    type="checkbox"
+                                                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
+                                                    required
+                                                />
                                             </div>
-                                        ) : (
-                                            'Create Account'
-                                        )}
-                                    </Button>
-                                </div>
-                            </form>
+                                            <div className="ml-3 text-sm">
+                                                <label htmlFor="terms" className="font-light text-gray-500 dark:text-gray-300">
+                                                    I accept the <a className="font-medium text-blue-600 hover:underline" href="#">Terms and Conditions</a>
+                                                </label>
+                                            </div>
+                                        </div>
 
-                            <p className='mt-4 text-center text-xs sm:text-sm text-gray-600 dark:text-gray-400'>
-                            Already have an account?{' '}
-                            <Link to='/login' className='font-medium text-indigo-600 hover:text-indigo-500'>
-                                Sign in
-                            </Link>
-                        </p>
+                                        <Button
+                                            type='submit'
+                                            disabled={isLoading}
+                                            className='w-full py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
+                                        >
+                                            {isLoading ? (
+                                                <div className="flex items-center justify-center">
+                                                    <Loader2 className='animate-spin mr-2' size={20} />
+                                                    <span>Creating account...</span>
+                                                </div>
+                                            ) : (
+                                                'Create Account'
+                                            )}
+                                        </Button>
+                                    </div>
+                                </form>
+
+                                <p className='mt-4 text-center text-xs sm:text-sm text-gray-600 dark:text-gray-400'>
+                                Already have an account?{' '}
+                                <Link to='/login' className='font-medium text-indigo-600 hover:text-indigo-500'>
+                                    Sign in
+                                </Link>
+                            </p>
+                            </div>
                         </div>
-                    </div>
-                </motion.div>
+                    </motion.div>
 
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="hidden lg:block"
-                >
-                    <AuthCTA />
-                </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="hidden lg:block"
+                    >
+                        <AuthCTA />
+                    </motion.div>
+                </div>
             </div>
         </div>
     );

@@ -5,26 +5,26 @@ import { motion } from 'framer-motion';
 
     const Footer = () => {
       return (
-        <footer className="relative py-12 md:py-16">
+        <footer className="relative py-8 sm:py-12 w-full overflow-hidden">
           {/* Add gradient background effect similar to hero */}
           <div className="absolute inset-0 -z-10">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-full blur-3xl" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[500px] bg-gradient-to-r from-indigo-500/10 to-purple-500/10 rounded-full blur-3xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[300px] bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl" />
           </div>
     
-          <div className="container mx-auto px-4 md:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+          <div className="w-[100%] max-w-[1920px] mx-auto px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="space-y-6"
+                className="space-y-4 sm:space-y-6"
               >
                 <Link to="/" className="flex items-center space-x-2 group">
-                  <div className="w-12 h-12 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-white font-bold text-2xl">J</span>
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
+                    <span className="text-white font-bold text-xl sm:text-2xl">J</span>
                   </div>
-                  <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
                     Job<span>Lynk</span>
                   </h1>
                 </Link>

@@ -96,177 +96,179 @@ const Login = () => {
     }, [user, navigate]);
 
     return (
-        <div className='min-h-screen w-full bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8 sm:py-12 px-4 sm:px-6 lg:px-8 overflow-x-hidden'>
-            <div className='container mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start'>
-                <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full max-w-md mx-auto lg:max-w-lg"
-                >
-                    <div className='bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-4 sm:p-6 lg:p-8 w-full'>
-                        <motion.div 
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                            className='text-center mb-6'
-                        >
-                            <h2 className='text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>
-                                Welcome back
-                            </h2>
-                            <p className='mt-2 text-gray-600 dark:text-gray-400'>
-                                Sign in to continue your journey
-                            </p>
-                        </motion.div>
-
-                        <form onSubmit={submitHandler} className='space-y-4 sm:space-y-6'>
-                            <motion.div 
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.3 }}
-                                className='space-y-3 sm:space-y-4'
-                            >
-                                {/* Email */}
-                                <div>
-                                    <Label htmlFor='email' className='text-gray-700 dark:text-gray-300'>Email Address</Label>
-                                    <div className='relative mt-1 group'>
-                                        <Mail className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-indigo-500 transition-colors' size={18} />
-                                        <Input
-                                            id='email'
-                                            name='email'
-                                            type='email'
-                                            className={cn(
-                                                'pl-10 border-2 transition-all duration-200 w-full',
-                                                'focus:ring-2 focus:ring-offset-2',
-                                                errors.email 
-                                                    ? 'border-red-500 focus:ring-red-500' 
-                                                    : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500',
-                                                'group-hover:border-indigo-400'
-                                            )}
-                                            disabled={isLoading}
-                                            value={input.email}
-                                            onChange={handleInputChange}
-                                            placeholder='you@example.com'
-                                        />
-                                        {errors.email && (
-                                            <motion.p 
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                className='text-red-500 text-xs mt-1'
-                                            >
-                                                {errors.email}
-                                            </motion.p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Password */}
-                                <div>
-                                    <Label htmlFor='password' className='text-gray-700 dark:text-gray-300'>Password</Label>
-                                    <div className='relative mt-1 group'>
-                                        <Lock className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-hover:text-indigo-500 transition-colors' size={18} />
-                                        <Input
-                                            id='password'
-                                            name='password'
-                                            type='password'
-                                            className={cn(
-                                                'pl-10 border-2 transition-all duration-200 w-full',
-                                                'focus:ring-2 focus:ring-offset-2',
-                                                errors.password 
-                                                    ? 'border-red-500 focus:ring-red-500' 
-                                                    : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500',
-                                                'group-hover:border-indigo-400'
-                                            )}
-                                            disabled={isLoading}
-                                            value={input.password}
-                                            onChange={handleInputChange}
-                                            placeholder='••••••••'
-                                        />
-                                        {errors.password && (
-                                            <motion.p 
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                className='text-red-500 text-xs mt-1'
-                                            >
-                                                {errors.password}
-                                            </motion.p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Remember Me & Forgot Password */}
-                                <div className="flex items-center justify-between flex-wrap gap-2">
-                                    <div className="flex items-center">
-                                        <input
-                                            id="remember-me"
-                                            name="remember-me"
-                                            type="checkbox"
-                                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                        />
-                                        <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                                            Remember me
-                                        </label>
-                                    </div>
-
-                                    <div className="text-sm">
-                                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                            Forgot password?
-                                        </a>
-                                    </div>
-                                </div>
-
-                                {/* Submit Button */}
-                                <motion.div
-                                    whileHover={{ scale: 1.01 }}
-                                    whileTap={{ scale: 0.99 }}
+        <div className='min-h-screen w-full bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-hidden'>
+            <div className='w-[100%] max-w-[1920px] mx-auto px-4 py-8 sm:py-12'>
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 items-start'>
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-full"
+                    >
+                        <div className='w-full max-w-md mx-auto'>
+                            <div className='bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-4 sm:p-6 lg:p-8'>
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.2 }}
+                                    className='text-center mb-6'
                                 >
-                                    <Button
-                                        type='submit'
-                                        disabled={isLoading}
-                                        className='w-full py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2'
-                                    >
-                                        {isLoading ? (
-                                            <>
-                                                <Loader2 className='animate-spin' size={20} />
-                                                <span>Signing in...</span>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <span>Sign in</span>
-                                                <ArrowRight size={18} />
-                                            </>
-                                        )}
-                                    </Button>
+                                    <h2 className='text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent'>
+                                        Welcome back
+                                    </h2>
+                                    <p className='mt-2 text-gray-600 dark:text-gray-400'>
+                                        Sign in to continue your journey
+                                    </p>
                                 </motion.div>
-                            </motion.div>
-                        </form>
 
-                        <motion.p 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.4 }}
-                            className='mt-6 text-center text-sm text-gray-600 dark:text-gray-400'
-                        >
-                            Don't have an account?{' '}
-                            <Link 
-                                to='/signup' 
-                                className='font-medium text-indigo-600 hover:text-indigo-500 transition-colors'
-                            >
-                                Sign up
-                            </Link>
-                        </motion.p>
-                    </div>
-                    <InterviewCTA className="mt-6" />
-                </motion.div>
+                                <form onSubmit={submitHandler} className='space-y-4 sm:space-y-6'>
+                                    <motion.div 
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{ delay: 0.3 }}
+                                        className='space-y-3 sm:space-y-4'
+                                    >
+                                        {/* Email */}
+                                        <div>
+                                            <Label htmlFor='email' className='text-gray-700 dark:text-gray-300'>Email Address</Label>
+                                            <div className='relative mt-1 group'>
+                                                <Input
+                                                    id='email'
+                                                    name='email'
+                                                    type='email'
+                                                    className={cn(
+                                                        'border-2 transition-all duration-200 w-full',
+                                                        'focus:ring-2 focus:ring-offset-2',
+                                                        errors.email 
+                                                            ? 'border-red-500 focus:ring-red-500' 
+                                                            : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500',
+                                                        'group-hover:border-indigo-400'
+                                                    )}
+                                                    disabled={isLoading}
+                                                    value={input.email}
+                                                    onChange={handleInputChange}
+                                                    placeholder='you@example.com'
+                                                />
+                                                {errors.email && (
+                                                    <motion.p 
+                                                        initial={{ opacity: 0, y: -10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className='text-red-500 text-xs mt-1'
+                                                    >
+                                                        {errors.email}
+                                                    </motion.p>
+                                                )}
+                                            </div>
+                                        </div>
 
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="hidden lg:block"
-                >
-                    <AuthCTA />
-                </motion.div>
+                                        {/* Password */}
+                                        <div>
+                                            <Label htmlFor='password' className='text-gray-700 dark:text-gray-300'>Password</Label>
+                                            <div className='relative mt-1 group'>
+                                                <Input
+                                                    id='password'
+                                                    name='password'
+                                                    type='password'
+                                                    className={cn(
+                                                        'border-2 transition-all duration-200 w-full',
+                                                        'focus:ring-2 focus:ring-offset-2',
+                                                        errors.password 
+                                                            ? 'border-red-500 focus:ring-red-500' 
+                                                            : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500',
+                                                        'group-hover:border-indigo-400'
+                                                    )}
+                                                    disabled={isLoading}
+                                                    value={input.password}
+                                                    onChange={handleInputChange}
+                                                    placeholder='••••••••'
+                                                />
+                                                {errors.password && (
+                                                    <motion.p 
+                                                        initial={{ opacity: 0, y: -10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        className='text-red-500 text-xs mt-1'
+                                                    >
+                                                        {errors.password}
+                                                    </motion.p>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Remember Me & Forgot Password */}
+                                        <div className="flex items-center justify-between flex-wrap gap-2">
+                                            <div className="flex items-center">
+                                                <input
+                                                    id="remember-me"
+                                                    name="remember-me"
+                                                    type="checkbox"
+                                                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                                />
+                                                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                                                    Remember me
+                                                </label>
+                                            </div>
+
+                                            <div className="text-sm">
+                                                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                    Forgot password?
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        {/* Submit Button */}
+                                        <motion.div
+                                            whileHover={{ scale: 1.01 }}
+                                            whileTap={{ scale: 0.99 }}
+                                        >
+                                            <Button
+                                                type='submit'
+                                                disabled={isLoading}
+                                                className='w-full py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2'
+                                            >
+                                                {isLoading ? (
+                                                    <>
+                                                        <Loader2 className='animate-spin' size={20} />
+                                                        <span>Signing in...</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <span>Sign in</span>
+                                                        <ArrowRight size={18} />
+                                                    </>
+                                                )}
+                                            </Button>
+                                        </motion.div>
+                                    </motion.div>
+                                </form>
+
+                                <motion.p 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.4 }}
+                                    className='mt-6 text-center text-sm text-gray-600 dark:text-gray-400'
+                                >
+                                    Don't have an account?{' '}
+                                    <Link 
+                                        to='/signup' 
+                                        className='font-medium text-indigo-600 hover:text-indigo-500 transition-colors'
+                                    >
+                                        Sign up
+                                    </Link>
+                                </motion.p>
+                            </div>
+                            <InterviewCTA className="mt-6" />
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="hidden lg:block"
+                    >
+                        <AuthCTA />
+                    </motion.div>
+                </div>
             </div>
         </div>
     );
