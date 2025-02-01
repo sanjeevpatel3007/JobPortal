@@ -5,18 +5,16 @@ import { Button } from '../ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { USER_API_END_POINT } from '@/utils/constant';
-import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '@/redux/authSlice';
-import { Loader2, Mail, Lock, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import AuthCTA from './AuthCTA';
 import {InterviewCTA } from "./InterviewCTA";
-
+import { successToast, errorToast } from '@/utils/toast';
 
 const Login = () => {
-    const [isLoading, setIsLoading] = useState(false);
     const [input, setInput] = useState({
         email: "",
         password: "",
@@ -57,11 +55,11 @@ const Login = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         if (!validateForm()) {
-            toast.error('Please fill in all fields correctly.');
+            errorToast('Please fill in all fields correctly.');
             return;
         }
+        
         try {
-            setIsLoading(true);
             const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
                 headers: {
                     "Content-Type": "application/json"
@@ -70,18 +68,16 @@ const Login = () => {
             });
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
+                successToast(res.data.message || 'Successfully logged in!');
                 if (res.data.user.role === 'recruiter') {
                     navigate("/admin");
                 } else {
                     navigate("/");
                 }
-                toast.success(res.data.message);
             }
         } catch (error) {
             console.error(error);
-            toast.error(error.response?.data?.message || 'Login failed');
-        } finally {
-            setIsLoading(false);
+            errorToast(error.response?.data?.message || 'Login failed. Please try again.');
         }
     };
 
@@ -144,7 +140,6 @@ const Login = () => {
                                                             : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500',
                                                         'group-hover:border-indigo-400'
                                                     )}
-                                                    disabled={isLoading}
                                                     value={input.email}
                                                     onChange={handleInputChange}
                                                     placeholder='you@example.com'
@@ -177,7 +172,6 @@ const Login = () => {
                                                             : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500',
                                                         'group-hover:border-indigo-400'
                                                     )}
-                                                    disabled={isLoading}
                                                     value={input.password}
                                                     onChange={handleInputChange}
                                                     placeholder='••••••••'
@@ -222,20 +216,10 @@ const Login = () => {
                                         >
                                             <Button
                                                 type='submit'
-                                                disabled={isLoading}
                                                 className='w-full py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2'
                                             >
-                                                {isLoading ? (
-                                                    <>
-                                                        <Loader2 className='animate-spin' size={20} />
-                                                        <span>Signing in...</span>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <span>Sign in</span>
-                                                        <ArrowRight size={18} />
-                                                    </>
-                                                )}
+                                                <span>Sign in</span>
+                                                <ArrowRight size={18} />
                                             </Button>
                                         </motion.div>
                                     </motion.div>

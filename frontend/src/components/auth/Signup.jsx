@@ -5,16 +5,15 @@ import { Button } from '../ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { USER_API_END_POINT } from '@/utils/constant';
-import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '@/redux/authSlice';
-import { Loader2, User, Mail, Phone, Lock, Upload, CheckCircle2 } from 'lucide-react';
+import { User, Mail, Phone, Lock, Upload, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import AuthCTA from './AuthCTA';
 import { motion } from 'framer-motion';
+import { successToast, errorToast } from '@/utils/toast';
 
 const Signup = () => {
-    const [isLoading, setIsLoading] = useState(false);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [input, setInput] = useState({
         fullname: "",
@@ -85,7 +84,7 @@ const Signup = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         if (!validateForm()) {
-            toast.error('Please fill in all fields correctly.');
+            errorToast('Please fill in all fields correctly.');
             return;
         }
 
@@ -100,7 +99,6 @@ const Signup = () => {
         }
 
         try {
-            setIsLoading(true);
             const registerRes = await axios.post(`${USER_API_END_POINT}/register`, formData, {
                 headers: { 'Content-Type': "multipart/form-data" },
                 withCredentials: true,
@@ -117,7 +115,7 @@ const Signup = () => {
 
                 if (loginRes.data.success) {
                     dispatch(setUser(loginRes.data.user));
-                    toast.success('Account created and logged in successfully!');
+                    successToast('Account created and logged in successfully!');
                     
                     if (loginRes.data.user.role === 'recruiter') {
                         navigate("/admin");
@@ -128,9 +126,7 @@ const Signup = () => {
             }
         } catch (error) {
             console.error(error);
-            toast.error(error.response?.data?.message || 'Registration failed');
-        } finally {
-            setIsLoading(false);
+            errorToast(error.response?.data?.message || 'Registration failed. Please try again.');
         }
     };
 
@@ -345,17 +341,10 @@ const Signup = () => {
 
                                         <Button
                                             type='submit'
-                                            disabled={isLoading}
-                                            className='w-full py-2 sm:py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700'
+                                            className='w-full py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2'
                                         >
-                                            {isLoading ? (
-                                                <div className="flex items-center justify-center">
-                                                    <Loader2 className='animate-spin mr-2' size={20} />
-                                                    <span>Creating account...</span>
-                                                </div>
-                                            ) : (
-                                                'Create Account'
-                                            )}
+                                            <span>Create Account</span>
+                                            <CheckCircle2 size={18} />
                                         </Button>
                                     </div>
                                 </form>

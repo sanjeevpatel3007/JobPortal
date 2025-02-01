@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { setUser } from '@/redux/authSlice'
-import { toast } from 'sonner'
+import { successToast, errorToast } from '@/utils/toast'
 import ThemeToggle from '../ThemeToggle'
 
 const Navbar = () => {
@@ -35,11 +35,11 @@ const Navbar = () => {
       if (res.data.success) {
         dispatch(setUser(null))
         navigate("/")
-        toast.success(res.data.message)
+        successToast(res.data.message || 'Successfully logged out!')
       }
     } catch (error) {
       console.log(error)
-      toast.error(error.response.data.message)
+      errorToast(error.response?.data?.message || 'Failed to logout. Please try again.')
     }
   }
 

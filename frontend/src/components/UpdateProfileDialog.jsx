@@ -3,15 +3,14 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { Loader2, Upload } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { USER_API_END_POINT } from '@/utils/constant';
 import { setUser } from '@/redux/authSlice';
-import { toast } from 'sonner';
+import { successToast, errorToast } from '@/utils/toast';
 
 const UpdateProfileDialog = ({ open, setOpen }) => {
-    const [loading, setLoading] = useState(false);
     const { user } = useSelector(store => store.auth);
     const [input, setInput] = useState({
         fullname: user?.fullname || "",
@@ -45,16 +44,13 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         formData.append("bio", input.bio);
         formData.append("skills", input.skills);
         
-        // Check if a new file is selected; if not, append the existing resume URL
         if (input.file) {
             formData.append("file", input.file);
         } else if (resumeUrl) {
-            // Include previous resume in the submission
-            formData.append("file", resumeUrl); // Make sure to handle this on the server-side
+            formData.append("file", resumeUrl);
         }
 
         try {
-            setLoading(true);
             const res = await axios.post(`${USER_API_END_POINT}/profile/update`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
@@ -63,14 +59,12 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
             });
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
-                toast.success(res.data.message);
-                setOpen(false); // Close the dialog on success
+                successToast(res.data.message || 'Profile updated successfully!');
+                setOpen(false);
             }
         } catch (error) {
             console.log(error);
-            toast.error(error.response?.data?.message || "An error occurred.");
-        } finally {
-            setLoading(false);
+            errorToast(error.response?.data?.message || 'Failed to update profile. Please try again.');
         }
     };
 
@@ -167,15 +161,11 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button type="submit" className="w-full" disabled={loading}>
-                            {loading ? (
-                                <>
-                                    <Loader2 className='mr-2 h-4 w-4 animate-spin' /> 
-                                    Updating...
-                                </>
-                            ) : (
-                                'Update Profile'
-                            )}
+                        <Button
+                            type="submit"
+                            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                        >
+                            Update Profile
                         </Button>
                     </DialogFooter>
                 </form>

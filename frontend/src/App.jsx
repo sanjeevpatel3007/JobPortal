@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { publicRoutes } from './routes/publicRoutes';
 import { adminRoutes } from './routes/adminRoutes';
+import { Toaster } from 'react-hot-toast';
 import Layout from './components/Layout'
 import Navbar from './components/shared/Navbar'
 import Login from './components/auth/Login'
@@ -38,6 +39,7 @@ function App() {
     <div className="App">
       <Suspense fallback={<div>Loading...</div>}>
         <RouterProvider router={appRouter} />
+        <Toaster position="top-right" />
       </Suspense>
     </div>
   );

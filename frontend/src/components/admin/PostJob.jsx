@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import axios from 'axios'
 import { JOB_API_END_POINT } from '@/utils/constant'
-import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
-import { Loader2, Briefcase, ArrowLeft, DollarSign, MapPin, Clock, Users } from 'lucide-react'
+import { Briefcase, ArrowLeft, DollarSign, MapPin, Clock, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Textarea } from '@/components/ui/textarea'
+import { successToast, errorToast } from '@/utils/toast'
 
 const PostJob = () => {
     const [input, setInput] = useState({
@@ -19,14 +19,13 @@ const PostJob = () => {
         description: "",
         requirements: "",
         salary: "",
-        experience: "", // Changed from experienceLevel to experience
+        experience: "",
         location: "",
         jobType: "",
-        position: 0,
-        company: "" // Changed from companyId to company
+        position: "",
+        company: ""
     });
     const [errors, setErrors] = useState({});
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const { companies } = useSelector(store => store.company);
@@ -39,8 +38,8 @@ const PostJob = () => {
 
     const selectChangeHandler = (value) => {
         const selectedCompany = companies.find((company) => company.name.toLowerCase() === value);
-        setInput({ ...input, company: selectedCompany._id }); // Changed from companyId to company
-        setErrors({ ...errors, company: "" }); // Changed from companyId to company
+        setInput({ ...input, company: selectedCompany._id });
+        setErrors({ ...errors, company: "" });
     };
 
     const validateForm = () => {
@@ -63,16 +62,11 @@ const PostJob = () => {
         e.preventDefault();
         if (!validateForm()) return;
         try {
-            setLoading(true);
-            
-            // Validate company selection
             if (!input.company) {
-                toast.error("Please select a company before posting a job");
-                setLoading(false);
+                errorToast("Please select a company before posting a job");
                 return;
             }
 
-            // Ensure requirements are processed
             const processedRequirements = input.requirements
                 .split('\n')
                 .map(req => req.trim())
@@ -88,12 +82,9 @@ const PostJob = () => {
                 location: input.location,
                 jobType: input.jobType,
                 position: parseInt(input.position),
-                companyId: input.company  // Explicitly use companyId
+                companyId: input.company
             };
             
-            console.log("Submitting job with data:", formattedInput);
-            
-            // Detailed axios configuration
             const res = await axios({
                 method: 'post',
                 url: `${JOB_API_END_POINT}/post`,
@@ -103,43 +94,32 @@ const PostJob = () => {
                 },
                 withCredentials: true
             });
-            
+
             if (res.data.success) {
-                toast.success(res.data.message);
+                successToast(res.data.message || 'Job posted successfully!');
                 navigate("/admin/jobs");
             }
         } catch (error) {
-            console.error("Job posting error:", {
-                status: error.response?.status,
-                data: error.response?.data,
-                message: error.message,
-                url: `${JOB_API_END_POINT}/post`
-            });
+            console.error("Job posting error:", error);
             
-            // More specific error handling
             if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
                 if (error.response.status === 400) {
-                    toast.error(error.response.data.message || "Invalid job data. Please check your inputs.");
+                    errorToast(error.response.data.message || "Invalid job data. Please check your inputs.");
                 } else if (error.response.status === 401) {
-                    toast.error("Unauthorized. Please log in again.");
+                    errorToast("Unauthorized. Please log in again.");
                 } else if (error.response.status === 404) {
-                    toast.error("Job posting endpoint not found. Please contact support.");
+                    errorToast("Job posting endpoint not found. Please contact support.");
                 } else {
-                    toast.error("An unexpected error occurred while posting the job.");
+                    errorToast("An unexpected error occurred while posting the job.");
                 }
             } else if (error.request) {
-                // The request was made but no response was received
-                toast.error("No response received from the server. Please check your internet connection.");
+                errorToast("No response received from the server. Please check your internet connection.");
             } else {
-                // Something happened in setting up the request that triggered an Error
-                toast.error("Error setting up job posting request.");
+                errorToast("Error setting up job posting request.");
             }
-        } finally {
-            setLoading(false);
         }
     };
+
     return (
         <div className='bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 min-h-screen pt-5'>
             <motion.div
@@ -323,17 +303,10 @@ const PostJob = () => {
                             </Button>
                             <Button
                                 type="submit"
-                                className="bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300"
-                                disabled={loading}
+                                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
                             >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                                        Please wait
-                                    </>
-                                ) : (
-                                    'Post New Job'
-                                )}
+                                <span>Post Job</span>
+                                <Briefcase size={18} />
                             </Button>
                         </div>
                     </form>
