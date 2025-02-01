@@ -175,6 +175,3 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
 };
 
 export default UpdateProfileDialog;
-
-//extract the resume name from the url
-//
