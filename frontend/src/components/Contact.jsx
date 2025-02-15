@@ -31,7 +31,7 @@ const Contact = () => {
     setStatus({ type: '', message: '' });
 
     try {
-      const response = await fetch('http://localhost:8000/api/contact/submit', {
+      const response = await fetch('https://jobportal-backend-ov5w.onrender.com/api/contact/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
